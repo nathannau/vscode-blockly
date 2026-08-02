@@ -10,6 +10,8 @@
  * testable and shared between the webview generator and tests.
  */
 
+import { SecondaryFileEntryPointError } from '../../../generationErrors';
+
 export interface SketchSections {
     includes: string[];
     declarations: string[];
@@ -58,15 +60,36 @@ function wrapFunction(name: string, body: string): string {
     return trimmed ? `${name} {\n${indentBlock(trimmed)}\n}` : `${name} {\n}`;
 }
 
-export function assembleSketch(sections: SketchSections, loopBody: string, generatedAt?: string): string {
+/**
+ * @param isSecondary When true, this file is a companion to the project's main
+ * sketch: it must not define `setup()`/`loop()` (the main file already does,
+ * and PlatformIO/arduino-cli compile every source file together — two
+ * definitions of either name is a link error). Only includes, declarations,
+ * and helper functions are emitted. If the workspace still has setup/loop
+ * content (a non-empty Setup block, or top-level statements), that content
+ * has nowhere to go, so generation is refused via
+ * {@link SecondaryFileEntryPointError} rather than silently dropped.
+ */
+export function assembleSketch(
+    sections: SketchSections,
+    loopBody: string,
+    generatedAt?: string,
+    isSecondary = false
+): string {
+    if (isSecondary && (sections.setup.length > 0 || Boolean(loopBody && loopBody.trim().length))) {
+        throw new SecondaryFileEntryPointError();
+    }
+
     const parts: string[] = [buildHeader(generatedAt)];
 
     if (sections.includes.length) {parts.push("// Includes\n" + sections.includes.join('\n') + "\n// End of includes");}
     if (sections.declarations.length) {parts.push("// Global declarations\n" + sections.declarations.join('\n') + "\n// End of global declarations");}
     if (sections.helpers.length) {parts.push("// Helper functions\n" + sections.helpers.join('\n') + "\n// End of helper functions");}
 
-    parts.push("// Initialization code\n" + wrapFunction('void setup()', sections.setup.join('\n')) + "\n// End of initialization code");
-    parts.push("// Forever running code\n" + wrapFunction('void loop()', loopBody ?? '') + "\n// End of forever running code");
+    if (!isSecondary) {
+        parts.push("// Initialization code\n" + wrapFunction('void setup()', sections.setup.join('\n')) + "\n// End of initialization code");
+        parts.push("// Forever running code\n" + wrapFunction('void loop()', loopBody ?? '') + "\n// End of forever running code");
+    }
 
     return parts.join('\n\n') + '\n';
 }

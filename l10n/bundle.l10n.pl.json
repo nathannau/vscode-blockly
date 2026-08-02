@@ -110,5 +110,9 @@
   "New Catalog: runtime": "Nowy katalog: środowisko uruchomieniowe",
   "Target runtime (framework:language)": "Docelowe środowisko uruchomieniowe (framework:language)",
   "Failed to create catalog \"{0}\": {1}": "Nie udało się utworzyć katalogu \"{0}\": {1}",
-  "Catalog \"{0}\" created.": "Utworzono katalog \"{0}\"."
+  "Catalog \"{0}\" created.": "Utworzono katalog \"{0}\".",
+  "Secondary file": "Plik pomocniczy",
+  "This file only contributes includes, declarations, and functions to the project — it will not generate its own setup()/loop().": "Ten plik dodaje do projektu tylko includy, deklaracje i funkcje — nie wygeneruje własnego setup()/loop().",
+  "Secondary file has entry-point content": "Plik pomocniczy zawiera kod punktu wejścia",
+  "This file is marked \"Secondary file\" but still has top-level blocks or a Setup block. Remove them (or uncheck \"Secondary file\") — the generated code was not changed.": "Ten plik jest oznaczony jako „Plik pomocniczy”, ale nadal zawiera bloki najwyższego poziomu lub blok Setup. Usuń je (lub odznacz „Plik pomocniczy”) — wygenerowany kod nie został zmieniony."
 }

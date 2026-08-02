@@ -110,5 +110,9 @@
   "New Catalog: runtime": "Neuer Katalog: Laufzeitumgebung",
   "Target runtime (framework:language)": "Ziel-Laufzeitumgebung (framework:language)",
   "Failed to create catalog \"{0}\": {1}": "Katalog \"{0}\" konnte nicht erstellt werden: {1}",
-  "Catalog \"{0}\" created.": "Katalog \"{0}\" erstellt."
+  "Catalog \"{0}\" created.": "Katalog \"{0}\" erstellt.",
+  "Secondary file": "Sekundäre Datei",
+  "This file only contributes includes, declarations, and functions to the project — it will not generate its own setup()/loop().": "Diese Datei trägt zum Projekt nur Includes, Deklarationen und Funktionen bei — sie generiert kein eigenes setup()/loop().",
+  "Secondary file has entry-point content": "Sekundäre Datei enthält Einstiegspunkt-Code",
+  "This file is marked \"Secondary file\" but still has top-level blocks or a Setup block. Remove them (or uncheck \"Secondary file\") — the generated code was not changed.": "Diese Datei ist als „Sekundäre Datei“ markiert, enthält aber noch Blöcke der obersten Ebene oder einen Setup-Block. Entfernen Sie diese (oder deaktivieren Sie „Sekundäre Datei“) — der generierte Code wurde nicht geändert."
 }

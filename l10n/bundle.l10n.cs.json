@@ -110,5 +110,9 @@
   "New Catalog: runtime": "Nový katalog: běhové prostředí",
   "Target runtime (framework:language)": "Cílové běhové prostředí (framework:language)",
   "Failed to create catalog \"{0}\": {1}": "Nepodařilo se vytvořit katalog \"{0}\": {1}",
-  "Catalog \"{0}\" created.": "Katalog \"{0}\" byl vytvořen."
+  "Catalog \"{0}\" created.": "Katalog \"{0}\" byl vytvořen.",
+  "Secondary file": "Sekundární soubor",
+  "This file only contributes includes, declarations, and functions to the project — it will not generate its own setup()/loop().": "Tento soubor přispívá do projektu pouze includy, deklaracemi a funkcemi — nebude generovat vlastní setup()/loop().",
+  "Secondary file has entry-point content": "Sekundární soubor obsahuje vstupní kód",
+  "This file is marked \"Secondary file\" but still has top-level blocks or a Setup block. Remove them (or uncheck \"Secondary file\") — the generated code was not changed.": "Tento soubor je označen jako „Sekundární soubor“, ale stále obsahuje bloky nejvyšší úrovně nebo blok Setup. Odstraňte je (nebo zrušte zaškrtnutí „Sekundární soubor“) — vygenerovaný kód nebyl změněn."
 }

@@ -390,6 +390,8 @@ export class BlocksEditorProvider implements vscode.CustomTextEditorProvider {
                     #toolbar { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-bottom: 1px solid var(--vscode-editorWidget-border, #454545); position: relative; z-index: 100; }
                     #toolbar .spacer { flex: 1; }
                     #toolbar label { font-size: 12px; opacity: 0.8; }
+                    .toolbarCheck { display: flex; align-items: center; gap: 4px; font-size: 12px; opacity: 0.8; cursor: pointer; white-space: nowrap; }
+                    .toolbarCheck input { margin: 0; cursor: pointer; }
                     #docsBtn[aria-disabled="true"] { opacity: 0.4; cursor: default; }
                     #genSplit { display: inline-flex; align-items: stretch; }
                     /* Custom toolbar tooltip — native title is unreliable through the toolkit's shadow DOM. */
@@ -439,7 +441,7 @@ export class BlocksEditorProvider implements vscode.CustomTextEditorProvider {
                     /* Themed keyboard focus for the plain native controls (the
                        browser default ring ignores the theme; the vscode-button web
                        components theme their own focus). */
-                    #emptyAction:focus-visible, #autoGenCheck:focus-visible {
+                    #emptyAction:focus-visible, #autoGenCheck:focus-visible, #secondaryFileCheck:focus-visible {
                         outline: 1px solid var(--vscode-focusBorder, #007fd4); outline-offset: 2px;
                     }
                     #emptyAction.visible { display: inline-block; }
@@ -485,6 +487,10 @@ export class BlocksEditorProvider implements vscode.CustomTextEditorProvider {
                 <div id="toolbar">
                     <label id="envLabel" for="envSelect" style="display:none">${vscode.l10n.t('Environment')}</label>
                     <vscode-dropdown id="envSelect" style="display:none"></vscode-dropdown>
+                    <label class="toolbarCheck" for="secondaryFileCheck" data-tooltip="${vscode.l10n.t('This file only contributes includes, declarations, and functions to the project — it will not generate its own setup()/loop().')}">
+                        <input type="checkbox" id="secondaryFileCheck" />
+                        <span>${vscode.l10n.t('Secondary file')}</span>
+                    </label>
                     <span class="spacer"></span>
                     <vscode-button id="docsBtn" appearance="icon" aria-disabled="true" aria-label="${vscode.l10n.t('Documentation')}" data-tooltip="${vscode.l10n.t('Documentation')}"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" stroke-linecap="round"><path d="M8 3.8c-1.4-.9-3.3-1.2-5.3-.9v8.6c2-.3 3.9 0 5.3.9 1.4-.9 3.3-1.2 5.3-.9V2.9c-2-.3-3.9 0-5.3.9z"/><path d="M8 3.8v8.6"/></svg></vscode-button>
                     <div id="genSplit">

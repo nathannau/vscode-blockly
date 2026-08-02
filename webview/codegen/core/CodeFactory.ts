@@ -68,9 +68,12 @@ export class CodeFactory {
         return result;
     }
 
-    public generateCode(workspace: Blockly.Workspace): string {
+    public generateCode(workspace: Blockly.Workspace, options?: { secondary?: boolean }): string {
         // The runtime generator's finish() returns the fully assembled source.
-        return this.rg ? this.rg.generate(workspace) : '';
+        // May throw (e.g. SecondaryFileEntryPointError) — left to the caller.
+        if (!this.rg) return '';
+        this.rg.setSecondary?.(!!options?.secondary);
+        return this.rg.generate(workspace);
     }
 
     private registerBlock(blockDef: any, impl: any, fallbackColour?: string): boolean {

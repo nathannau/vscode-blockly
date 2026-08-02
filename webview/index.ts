@@ -8,6 +8,7 @@ import { isRuntimeSupported, listSupportedRuntimes } from './codegen/core/genera
 import { setCommentAnnotation } from './codegen/core/commentAnnotation';
 import { initTypedVariableModal, initWorkspacePlugins, CPP_VARIABLE_TYPES, ThemedMinimap } from './plugins';
 import { initCppProcedureFlyout } from './custom-blocks/cppProcedureBlocks';
+import { SecondaryFileEntryPointError } from '../src/codegen/generationErrors';
 // The `hat_event_style` extension, `field_param_input`, and the rest of the
 // catalog-block field surface are registered by ./plugins (→ ./blockFields).
 
@@ -93,6 +94,7 @@ document.addEventListener("DOMContentLoaded", () => {
         [...new Set(listSupportedRuntimes().map(r => r.split(':')[0]))];
     const envSelect = document.getElementById('envSelect') as HTMLElement & { value?: string };
     const envLabel = document.getElementById('envLabel');
+    const secondaryFileCheck = document.getElementById('secondaryFileCheck') as HTMLInputElement | null;
     const generateBtn = document.getElementById('generateBtn') as (HTMLElement & { disabled?: boolean; appearance?: string }) | null;
     const genCaret = document.getElementById('genCaret');
     const genMenu = document.getElementById('genMenu') as HTMLElement | null;
@@ -214,6 +216,28 @@ document.addEventListener("DOMContentLoaded", () => {
     let autoGenerate = true;
     let runtimeReady = false;
     let minimap: ThemedMinimap | null = null;
+    let isSecondaryFile = false;
+    // The last real (non-blocked) toolbox, so a secondary-file conflict can be
+    // cleared without waiting for the next 'init_catalog' message.
+    let lastToolboxContents: any = null;
+    // Distinguishes "blocked because this file is a secondary file with
+    // leftover entry-point content" from the other showBlocked() reasons (no
+    // board, no framework, …), which only clear via a fresh init_catalog.
+    let secondaryConflictActive = false;
+
+    const clearSecondaryConflict = () => {
+        if (!secondaryConflictActive) return;
+        secondaryConflictActive = false;
+        emptyState?.classList.remove('visible');
+        if (lastToolboxContents) workspace.updateToolbox(lastToolboxContents);
+        runtimeReady = true;
+        updateGenControl();
+    };
+
+    secondaryFileCheck?.addEventListener('change', () => {
+        isSecondaryFile = !!secondaryFileCheck.checked;
+        if (runtimeReady || secondaryConflictActive) generateNow();
+    });
 
     let suppressEnvEvent = false;
     if (envSelect) {
@@ -426,6 +450,9 @@ document.addEventListener("DOMContentLoaded", () => {
             case 'init_catalog': {
                 const { hasBoard, framework, runtime } = message;
                 populateEnvSelector(message.envs ?? [], message.selectedEnv);
+                // A fresh catalog message supersedes any block reason we were
+                // showing (including our own secondary-file conflict banner).
+                secondaryConflictActive = false;
 
                 if (!hasBoard) {
                     showBlocked(
@@ -498,14 +525,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
                 const standalone = catalogCategories.filter(c => !merged.has(c._key));
 
-                workspace.updateToolbox({
+                lastToolboxContents = {
                     kind: 'categoryToolbox',
                     contents: [
                         { kind: 'search' },
                         ...languageCategories,
                         ...standalone,
                     ]
-                });
+                };
+                workspace.updateToolbox(lastToolboxContents);
 
                 break;
             }
@@ -549,6 +577,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     if (incomingState === lastSentState) {
                         return; // Ignore updates that we just sent
                     }
+                    // Not part of Blockly's own serialization: read separately
+                    // (Blockly.serialization.workspaces.load ignores unknown keys).
+                    isSecondaryFile = !!(message.state as { secondaryFile?: boolean }).secondaryFile;
+                    if (secondaryFileCheck) secondaryFileCheck.checked = isSecondaryFile;
                     Blockly.Events.disable();
                     try {
                         workspace.clear();
@@ -565,11 +597,27 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Generate code from the current workspace, tolerating generator errors.
-    const generate = (): string => {
+    // Blockly's own serialization plus the fields it doesn't know about.
+    const buildState = () => ({ ...Blockly.serialization.workspaces.save(workspace), secondaryFile: isSecondaryFile });
+
+    // Generate code from the current workspace. Returns undefined (instead of
+    // throwing/blank) when generation is refused — e.g. a "secondary file" still
+    // has setup/loop content — so the caller never writes a wrong/blank source
+    // file over a good one; the workspace itself is left untouched either way.
+    const generate = (): string | undefined => {
         try {
-            return codeFactory.generateCode(workspace);
+            const code = codeFactory.generateCode(workspace, { secondary: isSecondaryFile });
+            clearSecondaryConflict();
+            return code;
         } catch (err) {
+            if (err instanceof SecondaryFileEntryPointError) {
+                secondaryConflictActive = true;
+                showBlocked(
+                    l10n.t('Secondary file has entry-point content'),
+                    l10n.t('This file is marked "Secondary file" but still has top-level blocks or a Setup block. Remove them (or uncheck "Secondary file") — the generated code was not changed.')
+                );
+                return undefined;
+            }
             console.error('[codegen] generation failed', err);
             return '';
         }
@@ -580,22 +628,28 @@ document.addEventListener("DOMContentLoaded", () => {
         if (e.isUiEvent) return;
         if (workspace.isDragging()) return;
 
-        const state = Blockly.serialization.workspaces.save(workspace);
+        const state = buildState();
         const stateStr = JSON.stringify(state);
 
         if (stateStr !== lastSentState) {
             lastSentState = stateStr;
             const msg: any = { type: 'change', state };
-            if (autoGenerate) msg.code = generate();
+            if (autoGenerate) {
+                const code = generate();
+                if (typeof code === 'string') msg.code = code;
+            }
             vscode.postMessage(msg);
         }
     });
 
-    // Explicit regeneration via the split-button body (always sends code).
+    // Explicit regeneration via the split-button body (always sends code, when generation succeeds).
     const generateNow = () => {
-        const state = Blockly.serialization.workspaces.save(workspace);
+        const state = buildState();
         lastSentState = JSON.stringify(state);
-        vscode.postMessage({ type: 'change', state, code: generate() });
+        const code = generate();
+        const msg: any = { type: 'change', state };
+        if (typeof code === 'string') msg.code = code;
+        vscode.postMessage(msg);
     };
     generateBtn?.addEventListener('click', generateNow);
 

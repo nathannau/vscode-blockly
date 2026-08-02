@@ -11,6 +11,7 @@ import { ARDUINO_CPP_RUNTIME } from '../../../../../src/codegen/runtimes';
 export { ARDUINO_CPP_RUNTIME };
 
 let paramVarIds: Set<string> = new Set();
+let isSecondaryFile = false;
 
 export function createArduinoCppGenerator(): RuntimeGenerator {
     const g = new Blockly.CodeGenerator('arduino_cpp');
@@ -59,7 +60,7 @@ export function createArduinoCppGenerator(): RuntimeGenerator {
         this.isInitialized = false;
         if (this.nameDB_) this.nameDB_.reset();
         paramVarIds = new Set();
-        return assembleSketch(sections, code, formatGeneratedAt(new Date()));
+        return assembleSketch(sections, code, formatGeneratedAt(new Date()), isSecondaryFile);
     };
 
     (g as any).scrub_ = function (block: Blockly.Block, code: string, thisOnly?: boolean) {
@@ -80,5 +81,6 @@ export function createArduinoCppGenerator(): RuntimeGenerator {
         language: cppLanguageProfile,
         firstPartyGenerators: FIRST_PARTY_GENERATORS,
         generate: (workspace: Blockly.Workspace) => g.workspaceToCode(workspace),
+        setSecondary: (flag: boolean) => { isSecondaryFile = flag; },
     };
 }

@@ -110,5 +110,9 @@
   "New Catalog: runtime": "新建目录：运行时",
   "Target runtime (framework:language)": "目标运行时（framework:language）",
   "Failed to create catalog \"{0}\": {1}": "创建目录 \"{0}\" 失败：{1}",
-  "Catalog \"{0}\" created.": "已创建目录 \"{0}\"。"
+  "Catalog \"{0}\" created.": "已创建目录 \"{0}\"。",
+  "Secondary file": "次要文件",
+  "This file only contributes includes, declarations, and functions to the project — it will not generate its own setup()/loop().": "此文件仅向项目提供 include、声明和函数——不会生成自己的 setup()/loop()。",
+  "Secondary file has entry-point content": "次要文件包含入口点代码",
+  "This file is marked \"Secondary file\" but still has top-level blocks or a Setup block. Remove them (or uncheck \"Secondary file\") — the generated code was not changed.": "此文件已标记为\"次要文件\"，但仍包含顶层积木或 Setup 积木。请将其移除（或取消勾选\"次要文件\"）——生成的代码未被更改。"
 }

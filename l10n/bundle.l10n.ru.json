@@ -110,5 +110,9 @@
   "New Catalog: runtime": "Новый каталог: среда выполнения",
   "Target runtime (framework:language)": "Целевая среда выполнения (framework:language)",
   "Failed to create catalog \"{0}\": {1}": "Не удалось создать каталог \"{0}\": {1}",
-  "Catalog \"{0}\" created.": "Каталог \"{0}\" создан."
+  "Catalog \"{0}\" created.": "Каталог \"{0}\" создан.",
+  "Secondary file": "Вторичный файл",
+  "This file only contributes includes, declarations, and functions to the project — it will not generate its own setup()/loop().": "Этот файл добавляет в проект только includes, объявления и функции — он не будет генерировать собственный setup()/loop().",
+  "Secondary file has entry-point content": "Вторичный файл содержит код точки входа",
+  "This file is marked \"Secondary file\" but still has top-level blocks or a Setup block. Remove them (or uncheck \"Secondary file\") — the generated code was not changed.": "Этот файл помечен как «Вторичный файл», но всё ещё содержит блоки верхнего уровня или блок Setup. Удалите их (или снимите отметку «Вторичный файл») — сгенерированный код не был изменён."
 }

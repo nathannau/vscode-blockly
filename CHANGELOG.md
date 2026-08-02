@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Added
+
+- **"Secondary file" toggle** — a checkbox in the blocks editor toolbar marks a `.blk` file as a secondary file: it contributes includes, declarations, and functions to the project, but does not generate its own `setup()`/`loop()`. Useful when a project has multiple `.blk` files in `src/` (PlatformIO/arduino-cli compile every source file together, so more than one `setup()`/`loop()` is a link error). If the file still has top-level (loop) blocks or a non-empty Setup block, generation is refused with an explanatory message instead of silently dropping that code.
+
 ## [0.4.1] - 2026-06-25
 
 ### Added

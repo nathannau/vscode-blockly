@@ -110,5 +110,9 @@
   "New Catalog: runtime": "新しいカタログ: ランタイム",
   "Target runtime (framework:language)": "ターゲットランタイム (framework:language)",
   "Failed to create catalog \"{0}\": {1}": "カタログ \"{0}\" の作成に失敗しました: {1}",
-  "Catalog \"{0}\" created.": "カタログ \"{0}\" を作成しました。"
+  "Catalog \"{0}\" created.": "カタログ \"{0}\" を作成しました。",
+  "Secondary file": "セカンダリファイル",
+  "This file only contributes includes, declarations, and functions to the project — it will not generate its own setup()/loop().": "このファイルはプロジェクトに include・宣言・関数のみを提供します。独自の setup()/loop() は生成されません。",
+  "Secondary file has entry-point content": "セカンダリファイルにエントリポイントのコードが含まれています",
+  "This file is marked \"Secondary file\" but still has top-level blocks or a Setup block. Remove them (or uncheck \"Secondary file\") — the generated code was not changed.": "このファイルは「セカンダリファイル」としてマークされていますが、トップレベルのブロックまたは Setup ブロックがまだ残っています。それらを削除するか（または「セカンダリファイル」のチェックを外してください）— 生成されたコードは変更されていません。"
 }

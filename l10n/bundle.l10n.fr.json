@@ -110,5 +110,9 @@
   "New Catalog: runtime": "Nouveau catalogue : runtime",
   "Target runtime (framework:language)": "Runtime cible (framework:language)",
   "Failed to create catalog \"{0}\": {1}": "Impossible de créer le catalogue \"{0}\" : {1}",
-  "Catalog \"{0}\" created.": "Catalogue \"{0}\" créé."
+  "Catalog \"{0}\" created.": "Catalogue \"{0}\" créé.",
+  "Secondary file": "Fichier secondaire",
+  "This file only contributes includes, declarations, and functions to the project — it will not generate its own setup()/loop().": "Ce fichier n'apporte au projet que des includes, déclarations et fonctions — il ne générera pas son propre setup()/loop().",
+  "Secondary file has entry-point content": "Le fichier secondaire contient du code de point d'entrée",
+  "This file is marked \"Secondary file\" but still has top-level blocks or a Setup block. Remove them (or uncheck \"Secondary file\") — the generated code was not changed.": "Ce fichier est marqué « Fichier secondaire » mais contient encore des blocs de premier niveau ou un bloc Setup. Supprimez-les (ou décochez « Fichier secondaire ») — le code généré n'a pas été modifié."
 }

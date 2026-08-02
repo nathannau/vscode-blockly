@@ -35,4 +35,13 @@ export interface RuntimeGenerator {
     readonly firstPartyGenerators: Record<string, FirstPartyGenerator>;
     /** Produce the full source file for the given workspace. */
     generate(workspace: Blockly.Workspace): string;
+    /**
+     * Mark (or unmark) the next `generate()` call as targeting a "secondary"
+     * file — one that must not define its own program entry point(s) (e.g.
+     * `setup()`/`loop()` in arduino:cpp). Optional: targets without an entry
+     * point concept (or where multiple definitions across files aren't a
+     * build error) can leave this unimplemented, and the UI toggle is a no-op
+     * for them.
+     */
+    setSecondary?(isSecondary: boolean): void;
 }

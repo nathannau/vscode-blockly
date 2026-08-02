@@ -110,5 +110,9 @@
   "New Catalog: runtime": "새 카탈로그: 런타임",
   "Target runtime (framework:language)": "대상 런타임 (framework:language)",
   "Failed to create catalog \"{0}\": {1}": "카탈로그 \"{0}\" 생성 실패: {1}",
-  "Catalog \"{0}\" created.": "카탈로그 \"{0}\" 이(가) 생성되었습니다."
+  "Catalog \"{0}\" created.": "카탈로그 \"{0}\" 이(가) 생성되었습니다.",
+  "Secondary file": "보조 파일",
+  "This file only contributes includes, declarations, and functions to the project — it will not generate its own setup()/loop().": "이 파일은 프로젝트에 include, 선언, 함수만 제공하며 자체 setup()/loop()를 생성하지 않습니다.",
+  "Secondary file has entry-point content": "보조 파일에 진입점 코드가 있습니다",
+  "This file is marked \"Secondary file\" but still has top-level blocks or a Setup block. Remove them (or uncheck \"Secondary file\") — the generated code was not changed.": "이 파일은 \"보조 파일\"로 표시되어 있지만 여전히 최상위 블록 또는 Setup 블록이 있습니다. 이를 제거하거나(또는 \"보조 파일\" 선택을 해제하세요) — 생성된 코드는 변경되지 않았습니다."
 }

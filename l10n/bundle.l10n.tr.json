@@ -110,5 +110,9 @@
   "New Catalog: runtime": "Yeni Katalog: çalışma zamanı",
   "Target runtime (framework:language)": "Hedef çalışma zamanı (framework:language)",
   "Failed to create catalog \"{0}\": {1}": "\"{0}\" kataloğu oluşturulamadı: {1}",
-  "Catalog \"{0}\" created.": "\"{0}\" kataloğu oluşturuldu."
+  "Catalog \"{0}\" created.": "\"{0}\" kataloğu oluşturuldu.",
+  "Secondary file": "İkincil dosya",
+  "This file only contributes includes, declarations, and functions to the project — it will not generate its own setup()/loop().": "Bu dosya projeye yalnızca include, bildirim ve fonksiyon ekler — kendi setup()/loop() fonksiyonunu oluşturmaz.",
+  "Secondary file has entry-point content": "İkincil dosya giriş noktası kodu içeriyor",
+  "This file is marked \"Secondary file\" but still has top-level blocks or a Setup block. Remove them (or uncheck \"Secondary file\") — the generated code was not changed.": "Bu dosya \"İkincil dosya\" olarak işaretlendi ancak hâlâ üst düzey bloklar veya bir Setup bloğu içeriyor. Bunları kaldırın (veya \"İkincil dosya\" işaretini kaldırın) — oluşturulan kod değiştirilmedi."
 }

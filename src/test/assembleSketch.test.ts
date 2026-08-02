@@ -1,5 +1,6 @@
 import * as assert from 'assert';
 import { categorizeDefinitions, assembleSketch, SketchSections } from '../codegen/targets/arduino/cpp/assemble';
+import { SecondaryFileEntryPointError } from '../codegen/generationErrors';
 
 suite('categorizeDefinitions', () => {
     test('splits definitions by key prefix, preserving order', () => {
@@ -73,5 +74,38 @@ suite('assembleSketch', () => {
         const iSetup = out.indexOf('void setup()');
         const iLoop = out.indexOf('void loop()');
         assert.ok(iInc < iDecl && iDecl < iHelp && iHelp < iSetup && iSetup < iLoop, out);
+    });
+
+    suite('isSecondary', () => {
+        test('omits setup()/loop() entirely when the workspace has no entry-point content', () => {
+            const out = assembleSketch(
+                { includes: ['#include <Wire.h>'], declarations: [], helpers: ['void blink() {}'], setup: [] },
+                '',
+                undefined,
+                true
+            );
+            assert.ok(!out.includes('void setup()'), out);
+            assert.ok(!out.includes('void loop()'), out);
+            assert.ok(out.includes('#include <Wire.h>'), out);
+            assert.ok(out.includes('void blink() {}'), out);
+        });
+
+        test('throws SecondaryFileEntryPointError when a Setup block has content', () => {
+            assert.throws(
+                () => assembleSketch({ ...empty, setup: ['Wire1.begin();'] }, '', undefined, true),
+                SecondaryFileEntryPointError
+            );
+        });
+
+        test('throws SecondaryFileEntryPointError when there are top-level (loop) statements', () => {
+            assert.throws(
+                () => assembleSketch(empty, 'digitalWrite(13, HIGH);', undefined, true),
+                SecondaryFileEntryPointError
+            );
+        });
+
+        test('does not throw for a non-secondary file with the same content', () => {
+            assert.doesNotThrow(() => assembleSketch({ ...empty, setup: ['x();'] }, 'y();', undefined, false));
+        });
     });
 });
