@@ -113,6 +113,5 @@
   "Catalog \"{0}\" created.": "\"{0}\" kataloğu oluşturuldu.",
   "Secondary file": "İkincil dosya",
   "This file only contributes includes, declarations, and functions to the project — it will not generate its own setup()/loop().": "Bu dosya projeye yalnızca include, bildirim ve fonksiyon ekler — kendi setup()/loop() fonksiyonunu oluşturmaz.",
-  "Secondary file has entry-point content": "İkincil dosya giriş noktası kodu içeriyor",
-  "This file is marked \"Secondary file\" but still has top-level blocks or a Setup block. Remove them (or uncheck \"Secondary file\") — the generated code was not changed.": "Bu dosya \"İkincil dosya\" olarak işaretlendi ancak hâlâ üst düzey bloklar veya bir Setup bloğu içeriyor. Bunları kaldırın (veya \"İkincil dosya\" işaretini kaldırın) — oluşturulan kod değiştirilmedi."
+  "This block is part of a \"Secondary file\" and will not be included in the generated code (secondary files don't have their own setup()/loop()).": "Bu blok bir \"İkincil dosya\"nın parçasıdır ve oluşturulan koda dahil edilmeyecektir (ikincil dosyaların kendi setup()/loop() fonksiyonu yoktur)."
 }

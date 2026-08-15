@@ -113,6 +113,5 @@
   "Catalog \"{0}\" created.": "Katalog \"{0}\" erstellt.",
   "Secondary file": "Sekundäre Datei",
   "This file only contributes includes, declarations, and functions to the project — it will not generate its own setup()/loop().": "Diese Datei trägt zum Projekt nur Includes, Deklarationen und Funktionen bei — sie generiert kein eigenes setup()/loop().",
-  "Secondary file has entry-point content": "Sekundäre Datei enthält Einstiegspunkt-Code",
-  "This file is marked \"Secondary file\" but still has top-level blocks or a Setup block. Remove them (or uncheck \"Secondary file\") — the generated code was not changed.": "Diese Datei ist als „Sekundäre Datei“ markiert, enthält aber noch Blöcke der obersten Ebene oder einen Setup-Block. Entfernen Sie diese (oder deaktivieren Sie „Sekundäre Datei“) — der generierte Code wurde nicht geändert."
+  "This block is part of a \"Secondary file\" and will not be included in the generated code (secondary files don't have their own setup()/loop()).": "Dieser Block gehört zu einer „Sekundären Datei\" und wird nicht in den generierten Code aufgenommen (sekundäre Dateien haben kein eigenes setup()/loop())."
 }

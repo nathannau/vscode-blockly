@@ -113,6 +113,5 @@
   "Catalog \"{0}\" created.": "カタログ \"{0}\" を作成しました。",
   "Secondary file": "セカンダリファイル",
   "This file only contributes includes, declarations, and functions to the project — it will not generate its own setup()/loop().": "このファイルはプロジェクトに include・宣言・関数のみを提供します。独自の setup()/loop() は生成されません。",
-  "Secondary file has entry-point content": "セカンダリファイルにエントリポイントのコードが含まれています",
-  "This file is marked \"Secondary file\" but still has top-level blocks or a Setup block. Remove them (or uncheck \"Secondary file\") — the generated code was not changed.": "このファイルは「セカンダリファイル」としてマークされていますが、トップレベルのブロックまたは Setup ブロックがまだ残っています。それらを削除するか（または「セカンダリファイル」のチェックを外してください）— 生成されたコードは変更されていません。"
+  "This block is part of a \"Secondary file\" and will not be included in the generated code (secondary files don't have their own setup()/loop()).": "このブロックは「セカンダリファイル」の一部であり、生成されたコードには含まれません（セカンダリファイルは独自の setup()/loop() を持ちません）。"
 }

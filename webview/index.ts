@@ -8,7 +8,6 @@ import { isRuntimeSupported, listSupportedRuntimes } from './codegen/core/genera
 import { setCommentAnnotation } from './codegen/core/commentAnnotation';
 import { initTypedVariableModal, initWorkspacePlugins, CPP_VARIABLE_TYPES, ThemedMinimap } from './plugins';
 import { initCppProcedureFlyout } from './custom-blocks/cppProcedureBlocks';
-import { SecondaryFileEntryPointError } from '../src/codegen/generationErrors';
 // The `hat_event_style` extension, `field_param_input`, and the rest of the
 // catalog-block field surface are registered by ./plugins (→ ./blockFields).
 
@@ -217,26 +216,65 @@ document.addEventListener("DOMContentLoaded", () => {
     let runtimeReady = false;
     let minimap: ThemedMinimap | null = null;
     let isSecondaryFile = false;
-    // The last real (non-blocked) toolbox, so a secondary-file conflict can be
-    // cleared without waiting for the next 'init_catalog' message.
-    let lastToolboxContents: any = null;
-    // Distinguishes "blocked because this file is a secondary file with
-    // leftover entry-point content" from the other showBlocked() reasons (no
-    // board, no framework, …), which only clear via a fresh init_catalog.
-    let secondaryConflictActive = false;
 
-    const clearSecondaryConflict = () => {
-        if (!secondaryConflictActive) return;
-        secondaryConflictActive = false;
-        emptyState?.classList.remove('visible');
-        if (lastToolboxContents) workspace.updateToolbox(lastToolboxContents);
-        runtimeReady = true;
-        updateGenControl();
+    // A "secondary file" (see secondaryFileCheck below) must not contribute its
+    // own setup()/loop() — the entry-point blocks it would otherwise feed are
+    // instead greyed out in place (Blockly's own disabled-block rendering) and
+    // excluded from code generation, rather than erroring or hiding the canvas.
+    const SECONDARY_DISABLE_REASON = 'secondary-file';
+
+    // Every block that would land in setup() or loop(): a `code_setup`
+    // container (whichever zone it routes to — see sectionRouters.ts), or a
+    // plain top-level statement stack (identified by having a previousConnection,
+    // the same shape trait that lets Blockly chain a statement under another —
+    // hat-style blocks like code_setup/code_includes/code_declaration and
+    // procedure definitions never have one, so they're naturally excluded).
+    const collectEntryPointBlocks = (): Blockly.Block[] => {
+        const blocks: Blockly.Block[] = [];
+        for (const top of workspace.getTopBlocks(false)) {
+            if (top.type === 'code_setup') {
+                blocks.push(top);
+                continue;
+            }
+            if (top.previousConnection) {
+                for (let b: Blockly.Block | null = top; b; b = b.getNextBlock()) {
+                    blocks.push(b);
+                }
+            }
+        }
+        return blocks;
+    };
+
+    // Re-applies the grey-out to match the current isSecondaryFile + block tree.
+    // Wrapped in Events.disable() so this programmatic mutation doesn't re-enter
+    // the change listener below (mirrors the 'update' case's load pattern).
+    // Events.disable()/enable() is a plain boolean, not a ref-counted stack, so
+    // this only touches it when events are currently enabled — safe to call
+    // from inside another disabled-events block (e.g. the 'update' case) too.
+    const applySecondaryDisabling = () => {
+        const wasEnabled = Blockly.Events.isEnabled();
+        if (wasEnabled) Blockly.Events.disable();
+        try {
+            const entryBlocks = new Set(isSecondaryFile ? collectEntryPointBlocks() : []);
+            for (const block of workspace.getAllBlocks(false)) {
+                const disable = entryBlocks.has(block);
+                block.setDisabledReason(disable, SECONDARY_DISABLE_REASON);
+                block.setWarningText(
+                    disable
+                        ? l10n.t('This block is part of a "Secondary file" and will not be included in the generated code (secondary files don\'t have their own setup()/loop()).')
+                        : null,
+                    SECONDARY_DISABLE_REASON
+                );
+            }
+        } finally {
+            if (wasEnabled) Blockly.Events.enable();
+        }
     };
 
     secondaryFileCheck?.addEventListener('change', () => {
         isSecondaryFile = !!secondaryFileCheck.checked;
-        if (runtimeReady || secondaryConflictActive) generateNow();
+        applySecondaryDisabling();
+        if (runtimeReady) generateNow();
     });
 
     let suppressEnvEvent = false;
@@ -450,9 +488,6 @@ document.addEventListener("DOMContentLoaded", () => {
             case 'init_catalog': {
                 const { hasBoard, framework, runtime } = message;
                 populateEnvSelector(message.envs ?? [], message.selectedEnv);
-                // A fresh catalog message supersedes any block reason we were
-                // showing (including our own secondary-file conflict banner).
-                secondaryConflictActive = false;
 
                 if (!hasBoard) {
                     showBlocked(
@@ -525,15 +560,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
                 const standalone = catalogCategories.filter(c => !merged.has(c._key));
 
-                lastToolboxContents = {
+                workspace.updateToolbox({
                     kind: 'categoryToolbox',
                     contents: [
                         { kind: 'search' },
                         ...languageCategories,
                         ...standalone,
                     ]
-                };
-                workspace.updateToolbox(lastToolboxContents);
+                });
 
                 break;
             }
@@ -585,6 +619,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     try {
                         workspace.clear();
                         Blockly.serialization.workspaces.load(message.state, workspace);
+                        applySecondaryDisabling();
                     } catch (err) {
                         const text = err instanceof Error ? err.message : String(err);
                         console.error('[blocks] Failed to load workspace:', text);
@@ -600,24 +635,14 @@ document.addEventListener("DOMContentLoaded", () => {
     // Blockly's own serialization plus the fields it doesn't know about.
     const buildState = () => ({ ...Blockly.serialization.workspaces.save(workspace), secondaryFile: isSecondaryFile });
 
-    // Generate code from the current workspace. Returns undefined (instead of
-    // throwing/blank) when generation is refused — e.g. a "secondary file" still
-    // has setup/loop content — so the caller never writes a wrong/blank source
-    // file over a good one; the workspace itself is left untouched either way.
-    const generate = (): string | undefined => {
+    // Generate code from the current workspace, tolerating generator errors.
+    // A "secondary file"'s entry-point blocks are greyed out (see
+    // applySecondaryDisabling) and excluded by Blockly's own codegen — there is
+    // nothing left to reject here, generation always proceeds.
+    const generate = (): string => {
         try {
-            const code = codeFactory.generateCode(workspace, { secondary: isSecondaryFile });
-            clearSecondaryConflict();
-            return code;
+            return codeFactory.generateCode(workspace, { secondary: isSecondaryFile });
         } catch (err) {
-            if (err instanceof SecondaryFileEntryPointError) {
-                secondaryConflictActive = true;
-                showBlocked(
-                    l10n.t('Secondary file has entry-point content'),
-                    l10n.t('This file is marked "Secondary file" but still has top-level blocks or a Setup block. Remove them (or uncheck "Secondary file") — the generated code was not changed.')
-                );
-                return undefined;
-            }
             console.error('[codegen] generation failed', err);
             return '';
         }
@@ -628,28 +653,25 @@ document.addEventListener("DOMContentLoaded", () => {
         if (e.isUiEvent) return;
         if (workspace.isDragging()) return;
 
+        // Keep newly dropped/moved entry-point blocks greyed out in real time.
+        applySecondaryDisabling();
+
         const state = buildState();
         const stateStr = JSON.stringify(state);
 
         if (stateStr !== lastSentState) {
             lastSentState = stateStr;
             const msg: any = { type: 'change', state };
-            if (autoGenerate) {
-                const code = generate();
-                if (typeof code === 'string') msg.code = code;
-            }
+            if (autoGenerate) msg.code = generate();
             vscode.postMessage(msg);
         }
     });
 
-    // Explicit regeneration via the split-button body (always sends code, when generation succeeds).
+    // Explicit regeneration via the split-button body (always sends code).
     const generateNow = () => {
         const state = buildState();
         lastSentState = JSON.stringify(state);
-        const code = generate();
-        const msg: any = { type: 'change', state };
-        if (typeof code === 'string') msg.code = code;
-        vscode.postMessage(msg);
+        vscode.postMessage({ type: 'change', state, code: generate() });
     };
     generateBtn?.addEventListener('click', generateNow);
 

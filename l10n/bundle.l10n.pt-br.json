@@ -113,6 +113,5 @@
   "Catalog \"{0}\" created.": "Catálogo \"{0}\" criado.",
   "Secondary file": "Arquivo secundário",
   "This file only contributes includes, declarations, and functions to the project — it will not generate its own setup()/loop().": "Este arquivo contribui para o projeto apenas com includes, declarações e funções — não gerará seu próprio setup()/loop().",
-  "Secondary file has entry-point content": "O arquivo secundário contém código de ponto de entrada",
-  "This file is marked \"Secondary file\" but still has top-level blocks or a Setup block. Remove them (or uncheck \"Secondary file\") — the generated code was not changed.": "Este arquivo está marcado como \"Arquivo secundário\", mas ainda contém blocos de nível superior ou um bloco Setup. Remova-os (ou desmarque \"Arquivo secundário\") — o código gerado não foi alterado."
+  "This block is part of a \"Secondary file\" and will not be included in the generated code (secondary files don't have their own setup()/loop()).": "Este bloco faz parte de um \"Arquivo secundário\" e não será incluído no código gerado (arquivos secundários não têm seu próprio setup()/loop())."
 }

@@ -193,11 +193,17 @@ function defineCustomBlocks(): void {
 export function registerCppLanguageBlocks(
     g: Blockly.CodeGenerator,
     paramVarIds: ReadonlySet<string>,
+    isSecondaryFile: () => boolean,
 ): void {
     defineCustomBlocks();
     const f = g.forBlock;
     const val = (b: Blockly.Block, name: string, order: number, fallback: string) =>
         g.valueToCode(b, name, order) || fallback;
+    // A secondary file's globals (variables and helper functions) get internal
+    // linkage: PlatformIO/arduino-cli compile every source file together, so an
+    // externally-linked name (the C++ default) that happens to match one in
+    // another file is a link error, not just a scoping accident.
+    const storageClass = () => (isSecondaryFile() ? 'static ' : '');
 
     // ── Logic ───────────────────────────────────────────────────────────────
 
@@ -422,7 +428,7 @@ export function registerCppLanguageBlocks(
         const name = g.getVariableName(varId);
         if (!paramVarIds.has(varId)) {
             const { type, init } = cppTypeInfo(b, varId);
-            (g as any).definitions_[`decl_var_${name}`] = `${type} ${name} = ${init};`;
+            (g as any).definitions_[`decl_var_${name}`] = `${storageClass()}${type} ${name} = ${init};`;
         }
         return [name, ORDER.ATOMIC];
     };
@@ -433,7 +439,7 @@ export function registerCppLanguageBlocks(
         const { type, init } = cppTypeInfo(b, varId);
         const value = val(b, 'VALUE', ORDER.NONE, init);
         if (!paramVarIds.has(varId)) {
-            (g as any).definitions_[`decl_var_${name}`] = `${type} ${name} = ${init};`;
+            (g as any).definitions_[`decl_var_${name}`] = `${storageClass()}${type} ${name} = ${init};`;
         }
         return `${name} = ${value};\n`;
     };
@@ -442,7 +448,7 @@ export function registerCppLanguageBlocks(
         const varId = b.getFieldValue('VAR');
         const name = g.getVariableName(varId);
         if (!paramVarIds.has(varId)) {
-            (g as any).definitions_[`decl_var_${name}`] = `int ${name} = 0;`;
+            (g as any).definitions_[`decl_var_${name}`] = `${storageClass()}int ${name} = 0;`;
         }
         return [name, ORDER.ATOMIC];
     };
@@ -452,7 +458,7 @@ export function registerCppLanguageBlocks(
         const value = val(b, 'VALUE', ORDER.NONE, '0');
         const name = g.getVariableName(varId);
         if (!paramVarIds.has(varId)) {
-            (g as any).definitions_[`decl_var_${name}`] = `int ${name} = 0;`;
+            (g as any).definitions_[`decl_var_${name}`] = `${storageClass()}int ${name} = 0;`;
         }
         return `${name} = ${value};\n`;
     };
@@ -462,7 +468,7 @@ export function registerCppLanguageBlocks(
         const delta = val(b, 'DELTA', ORDER.ADDITIVE, '0');
         const name = g.getVariableName(varId);
         if (!paramVarIds.has(varId)) {
-            (g as any).definitions_[`decl_var_${name}`] = `int ${name} = 0;`;
+            (g as any).definitions_[`decl_var_${name}`] = `${storageClass()}int ${name} = 0;`;
         }
         return `${name} += ${delta};\n`;
     };
@@ -504,6 +510,9 @@ export function registerCppLanguageBlocks(
         const returnLine = isVoid
             ? ''
             : `${g.INDENT}return ${returnValue};\n`;
+        // Deliberately not `static`: a secondary file's helper functions are
+        // often its public interface (e.g. `jeu1_start`/`jeu1_loop`/`jeu1_stop`
+        // called from main.cpp), unlike its variables, which are private state.
         (g as any).definitions_[`func_${name}`] =
             `${returnType} ${name}(${paramList}) {\n${body}${returnLine}}\n`;
         return null;

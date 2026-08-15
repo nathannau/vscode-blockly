@@ -108,7 +108,10 @@ class ArduinoPythonGenerator extends PythonGenerator {
 export function createArduinoPythonGenerator(): RuntimeGenerator {
     const g = new ArduinoPythonGenerator();
     g.addReservedWords(pythonLanguageProfile.reservedWords.join(','));
-    pythonLanguageProfile.registerLanguageBlocks(g as unknown as Blockly.CodeGenerator, { paramVarIds: new Set() });
+    // Python scripts aren't link-combined the way PlatformIO/arduino-cli combine
+    // C++ translation units, so there's no "secondary file" concept here — this
+    // runtime doesn't implement RuntimeGenerator.setSecondary either.
+    pythonLanguageProfile.registerLanguageBlocks(g as unknown as Blockly.CodeGenerator, { paramVarIds: new Set(), isSecondaryFile: () => false });
 
     return {
         runtime: ARDUINO_PYTHON_RUNTIME,

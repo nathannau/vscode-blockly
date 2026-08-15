@@ -1,6 +1,5 @@
 import * as assert from 'assert';
 import { categorizeDefinitions, assembleSketch, SketchSections } from '../codegen/targets/arduino/cpp/assemble';
-import { SecondaryFileEntryPointError } from '../codegen/generationErrors';
 
 suite('categorizeDefinitions', () => {
     test('splits definitions by key prefix, preserving order', () => {
@@ -90,22 +89,16 @@ suite('assembleSketch', () => {
             assert.ok(out.includes('void blink() {}'), out);
         });
 
-        test('throws SecondaryFileEntryPointError when a Setup block has content', () => {
-            assert.throws(
-                () => assembleSketch({ ...empty, setup: ['Wire1.begin();'] }, '', undefined, true),
-                SecondaryFileEntryPointError
-            );
+        test('drops setup content silently instead of throwing, if any somehow remains', () => {
+            const out = assembleSketch({ ...empty, setup: ['Wire1.begin();'] }, '', undefined, true);
+            assert.ok(!out.includes('Wire1.begin();'), out);
+            assert.ok(!out.includes('void setup()'), out);
         });
 
-        test('throws SecondaryFileEntryPointError when there are top-level (loop) statements', () => {
-            assert.throws(
-                () => assembleSketch(empty, 'digitalWrite(13, HIGH);', undefined, true),
-                SecondaryFileEntryPointError
-            );
-        });
-
-        test('does not throw for a non-secondary file with the same content', () => {
-            assert.doesNotThrow(() => assembleSketch({ ...empty, setup: ['x();'] }, 'y();', undefined, false));
+        test('drops leftover top-level (loop) statements silently instead of throwing', () => {
+            const out = assembleSketch(empty, 'digitalWrite(13, HIGH);', undefined, true);
+            assert.ok(!out.includes('digitalWrite'), out);
+            assert.ok(!out.includes('void loop()'), out);
         });
     });
 });

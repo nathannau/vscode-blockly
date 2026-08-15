@@ -113,6 +113,5 @@
   "Catalog \"{0}\" created.": "已建立目錄 \"{0}\"。",
   "Secondary file": "次要檔案",
   "This file only contributes includes, declarations, and functions to the project — it will not generate its own setup()/loop().": "此檔案僅向專案提供 include、宣告和函式——不會產生自己的 setup()/loop()。",
-  "Secondary file has entry-point content": "次要檔案包含進入點程式碼",
-  "This file is marked \"Secondary file\" but still has top-level blocks or a Setup block. Remove them (or uncheck \"Secondary file\") — the generated code was not changed.": "此檔案已標記為「次要檔案」，但仍包含頂層積木或 Setup 積木。請將其移除（或取消勾選「次要檔案」）——產生的程式碼未被變更。"
+  "This block is part of a \"Secondary file\" and will not be included in the generated code (secondary files don't have their own setup()/loop()).": "此積木屬於「次要檔案」，不會包含在產生的程式碼中（次要檔案沒有自己的 setup()/loop()）。"
 }

@@ -73,7 +73,9 @@ export function createArduinoCppGenerator(): RuntimeGenerator {
     // Preserve the existing wiring exactly: registration captures the current
     // module-level `paramVarIds` reference; init() reassigns the module variable
     // per run. Do not change this timing — behavior must stay identical.
-    cppLanguageProfile.registerLanguageBlocks(g, { paramVarIds });
+    // `isSecondaryFile` is passed as a getter (not the boolean itself) so the
+    // one-time registration still reads whatever setSecondary() most recently set.
+    cppLanguageProfile.registerLanguageBlocks(g, { paramVarIds, isSecondaryFile: () => isSecondaryFile });
 
     return {
         runtime: ARDUINO_CPP_RUNTIME,

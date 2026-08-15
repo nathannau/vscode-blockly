@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ### Added
 
-- **"Secondary file" toggle** — a checkbox in the blocks editor toolbar marks a `.blk` file as a secondary file: it contributes includes, declarations, and functions to the project, but does not generate its own `setup()`/`loop()`. Useful when a project has multiple `.blk` files in `src/` (PlatformIO/arduino-cli compile every source file together, so more than one `setup()`/`loop()` is a link error). If the file still has top-level (loop) blocks or a non-empty Setup block, generation is refused with an explanatory message instead of silently dropping that code.
+- **"Secondary file" toggle** — a checkbox in the blocks editor toolbar marks a `.blk` file as a secondary file: it contributes includes, declarations, and functions to the project, but does not generate its own `setup()`/`loop()`. Useful when a project has multiple `.blk` files in `src/` (PlatformIO/arduino-cli compile every source file together, so more than one `setup()`/`loop()` is a link error). Any top-level block or Setup block dropped on the canvas while the file is marked secondary is greyed out in place (with an explanatory hover) and excluded from generation, rather than blocking the editor. Global variables in a secondary file are declared `static` (internal linkage), so a variable name that happens to match one in another file no longer collides at link time — helper functions are left external, since they're often the file's public interface (e.g. called from `main.cpp`).
 
 ## [0.4.1] - 2026-06-25
 

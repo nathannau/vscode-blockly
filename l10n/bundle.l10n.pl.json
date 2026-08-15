@@ -113,6 +113,5 @@
   "Catalog \"{0}\" created.": "Utworzono katalog \"{0}\".",
   "Secondary file": "Plik pomocniczy",
   "This file only contributes includes, declarations, and functions to the project — it will not generate its own setup()/loop().": "Ten plik dodaje do projektu tylko includy, deklaracje i funkcje — nie wygeneruje własnego setup()/loop().",
-  "Secondary file has entry-point content": "Plik pomocniczy zawiera kod punktu wejścia",
-  "This file is marked \"Secondary file\" but still has top-level blocks or a Setup block. Remove them (or uncheck \"Secondary file\") — the generated code was not changed.": "Ten plik jest oznaczony jako „Plik pomocniczy”, ale nadal zawiera bloki najwyższego poziomu lub blok Setup. Usuń je (lub odznacz „Plik pomocniczy”) — wygenerowany kod nie został zmieniony."
+  "This block is part of a \"Secondary file\" and will not be included in the generated code (secondary files don't have their own setup()/loop()).": "Ten blok jest częścią \"Pliku pomocniczego\" i nie zostanie uwzględniony w wygenerowanym kodzie (pliki pomocnicze nie mają własnego setup()/loop())."
 }

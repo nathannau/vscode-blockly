@@ -10,8 +10,6 @@
  * testable and shared between the webview generator and tests.
  */
 
-import { SecondaryFileEntryPointError } from '../../../generationErrors';
-
 export interface SketchSections {
     includes: string[];
     declarations: string[];
@@ -65,10 +63,10 @@ function wrapFunction(name: string, body: string): string {
  * sketch: it must not define `setup()`/`loop()` (the main file already does,
  * and PlatformIO/arduino-cli compile every source file together — two
  * definitions of either name is a link error). Only includes, declarations,
- * and helper functions are emitted. If the workspace still has setup/loop
- * content (a non-empty Setup block, or top-level statements), that content
- * has nowhere to go, so generation is refused via
- * {@link SecondaryFileEntryPointError} rather than silently dropped.
+ * and helper functions are emitted. The webview keeps `sections.setup` and
+ * `loopBody` empty in practice (it disables any Setup/top-level block while
+ * the workspace is marked secondary), but this function drops them silently
+ * either way rather than assuming that invariant holds.
  */
 export function assembleSketch(
     sections: SketchSections,
@@ -76,10 +74,6 @@ export function assembleSketch(
     generatedAt?: string,
     isSecondary = false
 ): string {
-    if (isSecondary && (sections.setup.length > 0 || Boolean(loopBody && loopBody.trim().length))) {
-        throw new SecondaryFileEntryPointError();
-    }
-
     const parts: string[] = [buildHeader(generatedAt)];
 
     if (sections.includes.length) {parts.push("// Includes\n" + sections.includes.join('\n') + "\n// End of includes");}

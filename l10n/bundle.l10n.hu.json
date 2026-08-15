@@ -113,6 +113,5 @@
   "Catalog \"{0}\" created.": "A(z) \"{0}\" katalógus létrehozva.",
   "Secondary file": "Másodlagos fájl",
   "This file only contributes includes, declarations, and functions to the project — it will not generate its own setup()/loop().": "Ez a fájl csak includokat, deklarációkat és függvényeket ad a projekthez — nem generál saját setup()/loop() függvényt.",
-  "Secondary file has entry-point content": "A másodlagos fájl belépési pontot tartalmazó kódot tartalmaz",
-  "This file is marked \"Secondary file\" but still has top-level blocks or a Setup block. Remove them (or uncheck \"Secondary file\") — the generated code was not changed.": "Ez a fájl „Másodlagos fájl”-ként van megjelölve, de még mindig tartalmaz felső szintű blokkokat vagy egy Setup blokkot. Távolítsa el őket (vagy törölje a „Másodlagos fájl” jelölést) — a generált kód nem változott."
+  "This block is part of a \"Secondary file\" and will not be included in the generated code (secondary files don't have their own setup()/loop()).": "Ez a blokk egy „Másodlagos fájl\" része, és nem kerül bele a generált kódba (a másodlagos fájloknak nincs saját setup()/loop() függvényük)."
 }
