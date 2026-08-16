@@ -15,6 +15,7 @@ import * as BlockDynamicConnection from '@blockly/block-dynamic-connection';
 import { Multiselect } from '@mit-app-inventor/blockly-plugin-workspace-multiselect';
 
 import './custom-blocks/cppProcedureBlocks';
+import { CONSTANT_VAR_TYPE } from './codegen/languages/cpp/languageBlocks';
 
 export const CPP_VARIABLE_TYPES: [string, string][] = [
     ['int',     'int'],
@@ -410,5 +411,75 @@ export function initTypedVariableModal(
     return () => {
         modal.dispose();
         workspace.removeToolboxCategoryCallback('CREATE_TYPED_VARIABLE');
+    };
+}
+
+const CREATE_VARIABLE_CALLBACK_KEY = 'CREATE_VARIABLE_BUTTON';
+
+/**
+ * The cpp "Variables" category's flyout: Blockly's classic (name-only)
+ * create-variable button, one reusable get block and one reusable set block
+ * (each with its own variable-picker dropdown — deliberately *not* Blockly's
+ * default `Variables.flyoutCategory`, which instead lists a whole get+set
+ * pair per *existing* variable and gets unwieldy fast), plus "declare
+ * variable" (explicit, changeable type; local or file-scope depending on
+ * where it's dropped — see languageBlocks.ts). A category can be dynamic
+ * (`custom`) or static (`contents`), not both, so this callback is what lets
+ * a button and fixed blocks coexist in one category.
+ */
+export function initVariableDeclareCategory(workspace: Blockly.WorkspaceSvg): () => void {
+    const createFlyout = (): Element[] => {
+        const button = document.createElement('button');
+        button.setAttribute('text', Blockly.Msg['NEW_VARIABLE'] ?? 'Create variable…');
+        button.setAttribute('callbackKey', CREATE_VARIABLE_CALLBACK_KEY);
+        return [
+            button,
+            Blockly.utils.xml.textToDom('<block type="variables_get"></block>'),
+            Blockly.utils.xml.textToDom('<block type="variables_set"></block>'),
+            Blockly.utils.xml.textToDom('<block type="declare_variable"></block>'),
+        ];
+    };
+
+    workspace.registerButtonCallback(CREATE_VARIABLE_CALLBACK_KEY, (button) => {
+        Blockly.Variables.createVariableButtonHandler(button.getTargetWorkspace());
+    });
+    workspace.registerToolboxCategoryCallback('VARIABLE_WITH_DECLARE', createFlyout);
+
+    return () => {
+        workspace.removeToolboxCategoryCallback('VARIABLE_WITH_DECLARE');
+        workspace.removeButtonCallback(CREATE_VARIABLE_CALLBACK_KEY);
+    };
+}
+
+const CREATE_CONSTANT_CALLBACK_KEY = 'CREATE_CONSTANT_BUTTON';
+
+/**
+ * The cpp "Constants" category's flyout: its own "Create constant…" button
+ * (creates a variable tagged with CONSTANT_VAR_TYPE, so it never shows up
+ * mixed in with regular variables — or vice versa) plus "declare
+ * constant"/"get constant". No per-constant blocks to enumerate here either:
+ * get_constant's own dropdown (scoped to CONSTANT_VAR_TYPE) already covers
+ * "pick an existing constant."
+ */
+export function initConstantCategory(workspace: Blockly.WorkspaceSvg): () => void {
+    const createFlyout = (): Element[] => {
+        const button = document.createElement('button');
+        button.setAttribute('text', Blockly.Msg['NEW_CONSTANT'] ?? 'Create constant…');
+        button.setAttribute('callbackKey', CREATE_CONSTANT_CALLBACK_KEY);
+        return [
+            button,
+            Blockly.utils.xml.textToDom('<block type="declare_constant"></block>'),
+            Blockly.utils.xml.textToDom('<block type="get_constant"></block>'),
+        ];
+    };
+
+    workspace.registerButtonCallback(CREATE_CONSTANT_CALLBACK_KEY, (button) => {
+        Blockly.Variables.createVariableButtonHandler(button.getTargetWorkspace(), undefined, CONSTANT_VAR_TYPE);
+    });
+    workspace.registerToolboxCategoryCallback('CONSTANT_CATEGORY', createFlyout);
+
+    return () => {
+        workspace.removeToolboxCategoryCallback('CONSTANT_CATEGORY');
+        workspace.removeButtonCallback(CREATE_CONSTANT_CALLBACK_KEY);
     };
 }

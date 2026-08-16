@@ -6,7 +6,7 @@ import { configureBlocklyLocale, installDialogBridge, injectThemedWorkspace } fr
 import { CodeFactory } from './codegen/core/CodeFactory';
 import { isRuntimeSupported, listSupportedRuntimes } from './codegen/core/generatorRegistry';
 import { setCommentAnnotation } from './codegen/core/commentAnnotation';
-import { initTypedVariableModal, initWorkspacePlugins, CPP_VARIABLE_TYPES, ThemedMinimap } from './plugins';
+import { initTypedVariableModal, initVariableDeclareCategory, initConstantCategory, initWorkspacePlugins, CPP_VARIABLE_TYPES, ThemedMinimap } from './plugins';
 import { initCppProcedureFlyout } from './custom-blocks/cppProcedureBlocks';
 // The `hat_event_style` extension, `field_param_input`, and the rest of the
 // catalog-block field surface are registered by ./plugins (→ ./blockFields).
@@ -60,6 +60,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const mergedBlockMessages = { ...blockMsgEn, ...blockMsgLocale };
     initTypedVariableModal(workspace, CPP_VARIABLE_TYPES, mergedBlockMessages);
+    initVariableDeclareCategory(workspace);
+    initConstantCategory(workspace);
     initWorkspacePlugins(workspace);
     initCppProcedureFlyout(workspace);
 
@@ -69,6 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
             'Loops': () => l10n.t('Loops'),
             'Math': () => l10n.t('Math'),
             'Text': () => l10n.t('Text'),
+            'Constants': () => l10n.t('Constants'),
             'Variables': () => l10n.t('Variables'),
             'Arrays': () => l10n.t('Arrays'),
             'Lists': () => l10n.t('Lists'),
@@ -223,6 +226,12 @@ document.addEventListener("DOMContentLoaded", () => {
     // excluded from code generation, rather than erroring or hiding the canvas.
     const SECONDARY_DISABLE_REASON = 'secondary-file';
 
+    // Declaration-only blocks: stackable (so they can also be dropped inside a
+    // function for a local declaration) but, at the top level, they only ever
+    // write into decl_var_/etc. and emit no inline code — never loop() content,
+    // regardless of secondary-file status, so they're exempt below.
+    const DECLARATION_ONLY_BLOCK_TYPES = new Set(['declare_variable', 'declare_constant', 'array_declare']);
+
     // Every block that would land in setup() or loop(): a `code_setup`
     // container (whichever zone it routes to — see sectionRouters.ts), or a
     // plain top-level statement stack (identified by having a previousConnection,
@@ -238,6 +247,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
             if (top.previousConnection) {
                 for (let b: Blockly.Block | null = top; b; b = b.getNextBlock()) {
+                    if (DECLARATION_ONLY_BLOCK_TYPES.has(b.type)) continue;
                     blocks.push(b);
                 }
             }
@@ -342,8 +352,20 @@ document.addEventListener("DOMContentLoaded", () => {
             ]
         },
         {
+            // "Create constant…" button (see initConstantCategory) tags the new
+            // variable with CONSTANT_VAR_TYPE, so it only shows up here — never
+            // mixed in with, or confused for, regular Variables.
+            kind: 'category', _key: 'Constants', name: translateCategory('Constants'), categorystyle: categoryStyleFor('Constants'),
+            custom: 'CONSTANT_CATEGORY',
+        },
+        {
+            // Name-only creation (Blockly's classic flow): the type is chosen
+            // later, at the point of use, by the "declare variable" block
+            // appended to this same flyout (see initVariableDeclareCategory),
+            // which also lets it be changed — unlike the old create-time type
+            // picker.
             kind: 'category', _key: 'Variables', name: translateCategory('Variables'), categorystyle: categoryStyleFor('Variables'),
-            custom: 'CREATE_TYPED_VARIABLE',
+            custom: 'VARIABLE_WITH_DECLARE',
         },
         {
             kind: 'category', _key: 'Arrays', name: translateCategory('Arrays'), categorystyle: categoryStyleFor('Arrays'),

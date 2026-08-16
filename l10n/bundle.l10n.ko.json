@@ -113,5 +113,6 @@
   "Catalog \"{0}\" created.": "카탈로그 \"{0}\" 이(가) 생성되었습니다.",
   "Secondary file": "보조 파일",
   "This file only contributes includes, declarations, and functions to the project — it will not generate its own setup()/loop().": "이 파일은 프로젝트에 include, 선언, 함수만 제공하며 자체 setup()/loop()를 생성하지 않습니다.",
-  "This block is part of a \"Secondary file\" and will not be included in the generated code (secondary files don't have their own setup()/loop()).": "이 블록은 \"보조 파일\"의 일부이며 생성된 코드에 포함되지 않습니다(보조 파일에는 자체 setup()/loop()가 없습니다)."
+  "This block is part of a \"Secondary file\" and will not be included in the generated code (secondary files don't have their own setup()/loop()).": "이 블록은 \"보조 파일\"의 일부이며 생성된 코드에 포함되지 않습니다(보조 파일에는 자체 setup()/loop()가 없습니다).",
+  "Constants": "상수"
 }

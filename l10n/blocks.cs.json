@@ -57,5 +57,11 @@
   "INLINE_X_INPUTS": "Vstupy v řádku u %1 bloků",
   "EXTERNAL_X_INPUTS": "Externí vstupy u %1 bloků",
   "ARRAY_DECLARE_MSG": "deklarovat pole %1 typu %2 velikosti %3",
-  "ARRAY_DECLARE_TOOLTIP": "Deklaruje nové pole (kolekci hodnot daného typu s pevnou velikostí, inicializovanou na nulu). Umístěte jednou na pole; pro čtení nebo zápis prvků použijte jinde bloky \"array get\"/\"array set\"."
+  "ARRAY_DECLARE_TOOLTIP": "Deklaruje nové pole (kolekci hodnot daného typu s pevnou velikostí, inicializovanou na nulu). Umístěte jednou na pole; pro čtení nebo zápis prvků použijte jinde bloky \"array get\"/\"array set\".",
+  "DECLARE_VARIABLE_MSG": "deklarovat %1 jako %2 statická %3",
+  "DECLARE_VARIABLE_TOOLTIP": "Deklaruje proměnnou s explicitním (změnitelným) typem. Umístěná uvnitř funkce nebo Setup je to lokální proměnná — zaškrtněte \"static\" pro zachování hodnoty mezi voláními. Umístěná mimo jakoukoli funkci (např. volně v sekundárním souboru) je to deklarace na úrovni souboru.",
+  "DECLARE_CONSTANT_MSG": "definovat konstantu %1 = %2",
+  "DECLARE_CONSTANT_TOOLTIP": "Deklaruje konstantu jako \"#define\" (bez typu, prostá textová náhrada). Na rozdíl od declare_variable není nikdy lokální — #define není vázán na funkci — a je vždy bezpečný napříč sekundárními soubory bez potřeby \"static\": nemá vůbec žádné propojení v C++, protože každé použití je nahrazeno svou literální hodnotou ještě před spuštěním kompilátoru.",
+  "GET_CONSTANT_TOOLTIP": "Čte hodnotu konstanty deklarované pomocí \"declare constant\".",
+  "NEW_CONSTANT": "Vytvořit konstantu…"
 }

@@ -113,5 +113,6 @@
   "Catalog \"{0}\" created.": "\"{0}\" kataloğu oluşturuldu.",
   "Secondary file": "İkincil dosya",
   "This file only contributes includes, declarations, and functions to the project — it will not generate its own setup()/loop().": "Bu dosya projeye yalnızca include, bildirim ve fonksiyon ekler — kendi setup()/loop() fonksiyonunu oluşturmaz.",
-  "This block is part of a \"Secondary file\" and will not be included in the generated code (secondary files don't have their own setup()/loop()).": "Bu blok bir \"İkincil dosya\"nın parçasıdır ve oluşturulan koda dahil edilmeyecektir (ikincil dosyaların kendi setup()/loop() fonksiyonu yoktur)."
+  "This block is part of a \"Secondary file\" and will not be included in the generated code (secondary files don't have their own setup()/loop()).": "Bu blok bir \"İkincil dosya\"nın parçasıdır ve oluşturulan koda dahil edilmeyecektir (ikincil dosyaların kendi setup()/loop() fonksiyonu yoktur).",
+  "Constants": "Sabitler"
 }

@@ -57,5 +57,11 @@
   "INLINE_X_INPUTS": "Entradas en línea en %1 bloques",
   "EXTERNAL_X_INPUTS": "Entradas externas en %1 bloques",
   "ARRAY_DECLARE_MSG": "declarar array %1 de %2 tamaño %3",
-  "ARRAY_DECLARE_TOOLTIP": "Declara un nuevo array (una colección de tamaño fijo, inicializada a cero, de valores del tipo indicado). Colócalo una vez por array; usa \"array get\"/\"array set\" en otro lugar para leer o escribir sus elementos."
+  "ARRAY_DECLARE_TOOLTIP": "Declara un nuevo array (una colección de tamaño fijo, inicializada a cero, de valores del tipo indicado). Colócalo una vez por array; usa \"array get\"/\"array set\" en otro lugar para leer o escribir sus elementos.",
+  "DECLARE_VARIABLE_MSG": "declarar %1 como %2 static %3",
+  "DECLARE_VARIABLE_TOOLTIP": "Declara una variable con un tipo explícito (modificable). Colocada dentro de una función o de Setup, es una variable local — marca \"static\" para conservar su valor entre llamadas. Colocada fuera de cualquier función (por ejemplo, suelta en un archivo secundario), es en cambio una declaración a nivel de archivo.",
+  "DECLARE_CONSTANT_MSG": "definir constante %1 = %2",
+  "DECLARE_CONSTANT_TOOLTIP": "Declara una constante como un \"#define\" (sin tipo, simple sustitución de texto). A diferencia de declare_variable, nunca es local — un #define no está vinculado a una función — y siempre es seguro entre archivos secundarios sin necesitar \"static\": no tiene ningún enlace en C++, ya que cada uso se sustituye por su valor literal antes incluso de que se ejecute el compilador.",
+  "GET_CONSTANT_TOOLTIP": "Lee el valor de una constante declarada con \"declare constant\".",
+  "NEW_CONSTANT": "Crear constante…"
 }

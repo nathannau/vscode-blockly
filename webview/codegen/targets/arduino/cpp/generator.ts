@@ -1,5 +1,6 @@
 import * as Blockly from 'blockly';
 import { cppLanguageProfile } from '../../../languages/cpp';
+import { isInsideFunction } from '../../../languages/cpp/languageBlocks';
 import { FieldTypedParamInput } from '../../../../custom-fields/FieldTypedParamInput';
 import { categorizeDefinitions, assembleSketch } from '../../../../../src/codegen/targets/arduino/cpp/assemble';
 import { formatGeneratedAt } from '../../../../../src/codegen/generatedAt';
@@ -12,6 +13,7 @@ export { ARDUINO_CPP_RUNTIME };
 
 let paramVarIds: Set<string> = new Set();
 let isSecondaryFile = false;
+let localDeclaredVarIds: Set<string> = new Set();
 
 export function createArduinoCppGenerator(): RuntimeGenerator {
     const g = new Blockly.CodeGenerator('arduino_cpp');
@@ -31,6 +33,7 @@ export function createArduinoCppGenerator(): RuntimeGenerator {
         this.nameDB_.populateProcedures(workspace);
 
         paramVarIds = new Set<string>();
+        localDeclaredVarIds = new Set<string>();
         for (const block of workspace.getAllBlocks(false)) {
             if (
                 block.type === 'procedures_defnoreturn' ||
@@ -45,6 +48,14 @@ export function createArduinoCppGenerator(): RuntimeGenerator {
                         if (varId) paramVarIds.add(varId);
                     }
                 }
+            }
+            // A declare_variable inside a function/Setup fully owns that
+            // variable's declaration there — it must never also get an
+            // auto-declared global elsewhere (see hasOwnDeclaration in
+            // languageBlocks.ts).
+            if (block.type === 'declare_variable' && isInsideFunction(block)) {
+                const varId = block.getFieldValue('VAR');
+                if (varId) localDeclaredVarIds.add(varId);
             }
         }
 
@@ -73,9 +84,14 @@ export function createArduinoCppGenerator(): RuntimeGenerator {
     // Preserve the existing wiring exactly: registration captures the current
     // module-level `paramVarIds` reference; init() reassigns the module variable
     // per run. Do not change this timing — behavior must stay identical.
-    // `isSecondaryFile` is passed as a getter (not the boolean itself) so the
-    // one-time registration still reads whatever setSecondary() most recently set.
-    cppLanguageProfile.registerLanguageBlocks(g, { paramVarIds, isSecondaryFile: () => isSecondaryFile });
+    // `isSecondaryFile`/`localDeclaredVarIds` are passed as getters (not the
+    // values themselves) so the one-time registration still reads whatever the
+    // most recent run/setSecondary() set — unlike the paramVarIds reference above.
+    cppLanguageProfile.registerLanguageBlocks(g, {
+        paramVarIds,
+        isSecondaryFile: () => isSecondaryFile,
+        localDeclaredVarIds: () => localDeclaredVarIds,
+    });
 
     return {
         runtime: ARDUINO_CPP_RUNTIME,

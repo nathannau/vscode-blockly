@@ -113,5 +113,6 @@
   "Catalog \"{0}\" created.": "Utworzono katalog \"{0}\".",
   "Secondary file": "Plik pomocniczy",
   "This file only contributes includes, declarations, and functions to the project — it will not generate its own setup()/loop().": "Ten plik dodaje do projektu tylko includy, deklaracje i funkcje — nie wygeneruje własnego setup()/loop().",
-  "This block is part of a \"Secondary file\" and will not be included in the generated code (secondary files don't have their own setup()/loop()).": "Ten blok jest częścią \"Pliku pomocniczego\" i nie zostanie uwzględniony w wygenerowanym kodzie (pliki pomocnicze nie mają własnego setup()/loop())."
+  "This block is part of a \"Secondary file\" and will not be included in the generated code (secondary files don't have their own setup()/loop()).": "Ten blok jest częścią \"Pliku pomocniczego\" i nie zostanie uwzględniony w wygenerowanym kodzie (pliki pomocnicze nie mają własnego setup()/loop()).",
+  "Constants": "Stałe"
 }

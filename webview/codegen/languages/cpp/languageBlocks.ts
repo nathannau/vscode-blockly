@@ -6,6 +6,12 @@ import { defineSwitchCaseBlock } from '../shared/blockDefs';
 import { ORDER } from './order';
 import { registerArduinoStringGenerators } from './strings';
 
+// Blockly variable-model "type" tag reserved for constants (declare_constant/
+// get_constant), so their field_variable dropdowns only ever list constants —
+// never mixed in with, or confused for, regular variables. Consumed by
+// plugins.ts's initConstantCategory to create constants with this same type.
+export const CONSTANT_VAR_TYPE = 'constant';
+
 export const CPP_KEYWORDS = [
     'auto', 'break', 'case', 'catch', 'char', 'class', 'const', 'constexpr',
     'continue', 'default', 'delete', 'do', 'double', 'else', 'enum', 'explicit',
@@ -20,32 +26,59 @@ export const CPP_KEYWORDS = [
     'requires', 'char8_t',
 ];
 
+// Scalar C++ types offered wherever a block lets you pick one (typed
+// variables, declare_variable, array_declare's element type, …).
+const SCALAR_TYPE_OPTIONS: [string, string][] = [
+    ['int', 'int'], ['long', 'long'],
+    ['int8_t', 'int8_t'], ['int16_t', 'int16_t'], ['int32_t', 'int32_t'],
+    ['unsigned int', 'unsigned int'], ['unsigned long', 'unsigned long'],
+    ['byte', 'byte'], ['word', 'word'],
+    ['uint8_t', 'uint8_t'], ['uint16_t', 'uint16_t'], ['uint32_t', 'uint32_t'],
+    ['float', 'float'], ['double', 'double'],
+    ['bool', 'bool'], ['char', 'char'], ['String', 'String'],
+];
+
+/** Zero-equivalent literal for one of SCALAR_TYPE_OPTIONS's types; 'int'/'0' for anything else. */
+function defaultInitForCppType(type: string): string {
+    switch (type) {
+        case 'float':  case 'double': return '0.0';
+        case 'bool':                  return 'false';
+        case 'char':                  return "'\\0'";
+        case 'String':                return '""';
+        default:                      return '0';
+    }
+}
+
 function cppTypeInfo(
     block: Blockly.Block,
     varId: string,
 ): { type: string; init: string } {
     const model = block.workspace.getVariableMap().getVariableById(varId);
     const t = model?.getType() || 'int';
-    switch (t) {
-        case 'int':            return { type: 'int',            init: '0' };
-        case 'long':           return { type: 'long',           init: '0' };
-        case 'int8_t':         return { type: 'int8_t',         init: '0' };
-        case 'int16_t':        return { type: 'int16_t',        init: '0' };
-        case 'int32_t':        return { type: 'int32_t',        init: '0' };
-        case 'unsigned int':   return { type: 'unsigned int',   init: '0' };
-        case 'unsigned long':  return { type: 'unsigned long',  init: '0' };
-        case 'byte':           return { type: 'byte',           init: '0' };
-        case 'word':           return { type: 'word',           init: '0' };
-        case 'uint8_t':        return { type: 'uint8_t',        init: '0' };
-        case 'uint16_t':       return { type: 'uint16_t',       init: '0' };
-        case 'uint32_t':       return { type: 'uint32_t',       init: '0' };
-        case 'float':          return { type: 'float',          init: '0.0' };
-        case 'double':         return { type: 'double',         init: '0.0' };
-        case 'bool':           return { type: 'bool',           init: 'false' };
-        case 'char':           return { type: 'char',           init: "'\\0'" };
-        case 'String':         return { type: 'String',         init: '""' };
-        default:               return { type: 'int',            init: '0' };
+    const known = SCALAR_TYPE_OPTIONS.some(([, value]) => value === t);
+    const type = known ? t : 'int';
+    return { type, init: defaultInitForCppType(type) };
+}
+
+// Block types whose STACK/MEMBERS input is a real C++ function body — a
+// declare_variable nested (at any depth) inside one of these is a genuine
+// local variable; one that isn't is file scope (goes to decl_var_, like a
+// scalar auto-declared by variables_get_dynamic). getSurroundParent() walks
+// through nested statement inputs (if/loops/etc.) but stops at simple
+// "stacked below" chaining, so this correctly finds the *enclosing block*,
+// not just the previous one.
+const FUNCTION_CONTAINER_TYPES = new Set([
+    'cpp_procedures_defnoreturn', 'cpp_procedures_defreturn', 'code_setup',
+]);
+
+/** Exported for generator.ts's init(), which pre-scans the whole workspace once
+ *  per run to find variables with a local declare_variable — see localDeclaredVarIds
+ *  there and its use in the auto-declare fallbacks below. */
+export function isInsideFunction(block: Blockly.Block): boolean {
+    for (let parent = block.getSurroundParent(); parent; parent = parent.getSurroundParent()) {
+        if (FUNCTION_CONTAINER_TYPES.has(parent.type)) return true;
     }
+    return false;
 }
 
 // ── Custom block definitions (not in Blockly core) ──────────────────────────
@@ -157,22 +190,54 @@ function defineCustomBlocks(): void {
             tooltip: '%{BKY_RETURN_TOOLTIP}',
         },
         {
+            type: 'declare_constant',
+            message0: '%{BKY_DECLARE_CONSTANT_MSG}',
+            args0: [
+                {
+                    type: 'field_variable', name: 'VAR', variable: 'MY_CONSTANT',
+                    variableTypes: [CONSTANT_VAR_TYPE], defaultType: CONSTANT_VAR_TYPE,
+                },
+                { type: 'field_input', name: 'VALUE', text: '0' },
+            ],
+            inputsInline: true,
+            previousStatement: null,
+            nextStatement: null,
+            style: blockStyleFor('Constants'),
+            tooltip: '%{BKY_DECLARE_CONSTANT_TOOLTIP}',
+        },
+        {
+            type: 'get_constant',
+            message0: '%1',
+            args0: [
+                {
+                    type: 'field_variable', name: 'VAR', variable: 'MY_CONSTANT',
+                    variableTypes: [CONSTANT_VAR_TYPE], defaultType: CONSTANT_VAR_TYPE,
+                },
+            ],
+            output: null,
+            style: blockStyleFor('Constants'),
+            tooltip: '%{BKY_GET_CONSTANT_TOOLTIP}',
+        },
+        {
+            type: 'declare_variable',
+            message0: '%{BKY_DECLARE_VARIABLE_MSG}',
+            args0: [
+                { type: 'field_variable', name: 'VAR', variable: 'x' },
+                { type: 'field_dropdown', name: 'TYPE', options: SCALAR_TYPE_OPTIONS },
+                { type: 'field_checkbox', name: 'STATIC', checked: false },
+            ],
+            inputsInline: true,
+            previousStatement: null,
+            nextStatement: null,
+            style: blockStyleFor('Variables'),
+            tooltip: '%{BKY_DECLARE_VARIABLE_TOOLTIP}',
+        },
+        {
             type: 'array_declare',
             message0: '%{BKY_ARRAY_DECLARE_MSG}',
             args0: [
                 { type: 'field_variable', name: 'VAR', variable: 'arr' },
-                {
-                    type: 'field_dropdown', name: 'TYPE',
-                    options: [
-                        ['int', 'int'], ['long', 'long'],
-                        ['int8_t', 'int8_t'], ['int16_t', 'int16_t'], ['int32_t', 'int32_t'],
-                        ['unsigned int', 'unsigned int'], ['unsigned long', 'unsigned long'],
-                        ['byte', 'byte'], ['word', 'word'],
-                        ['uint8_t', 'uint8_t'], ['uint16_t', 'uint16_t'], ['uint32_t', 'uint32_t'],
-                        ['float', 'float'], ['double', 'double'],
-                        ['bool', 'bool'], ['char', 'char'], ['String', 'String'],
-                    ],
-                },
+                { type: 'field_dropdown', name: 'TYPE', options: SCALAR_TYPE_OPTIONS },
                 { type: 'field_number', name: 'SIZE', value: 8, min: 1, precision: 1 },
             ],
             inputsInline: true,
@@ -219,6 +284,7 @@ export function registerCppLanguageBlocks(
     g: Blockly.CodeGenerator,
     paramVarIds: ReadonlySet<string>,
     isSecondaryFile: () => boolean,
+    localDeclaredVarIds: () => ReadonlySet<string>,
 ): void {
     defineCustomBlocks();
     const f = g.forBlock;
@@ -229,6 +295,21 @@ export function registerCppLanguageBlocks(
     // externally-linked name (the C++ default) that happens to match one in
     // another file is a link error, not just a scoping accident.
     const storageClass = () => (isSecondaryFile() ? 'static ' : '');
+    // A variable that has its own local declare_variable somewhere never gets
+    // an auto-declared global too — otherwise that global would be unstatic
+    // dead code at best, and a link-time name collision (exactly what
+    // declare_variable's static option exists to avoid) at worst.
+    const hasOwnDeclaration = (varId: string) => paramVarIds.has(varId) || localDeclaredVarIds().has(varId);
+    // True only for a variable created through the legacy typed-variable modal
+    // (its Blockly variable model carries a real type). New variables (created
+    // with the now name-only "Create variable…" button) have none — many
+    // blocks that reference a variable (declare_variable, but also things like
+    // "try button positions in random order", which declares its own loop
+    // variable inline) fully own that variable's declaration themselves, so
+    // guessing "int" here would at best add a dead unstatic global and at
+    // worst shadow/collide with what that block already declared.
+    const hasExplicitCppType = (block: Blockly.Block, varId: string): boolean =>
+        !!block.workspace.getVariableMap().getVariableById(varId)?.getType();
 
     // ── Logic ───────────────────────────────────────────────────────────────
 
@@ -448,12 +529,37 @@ export function registerCppLanguageBlocks(
 
     // ── Variables ────────────────────────────────────────────────────────────
 
+    // The Global-declarations section is emitted in definitions_'s key
+    // insertion order (see categorizeDefinitions). Plain reassignment of an
+    // *existing* key leaves it in its original position (standard JS object
+    // semantics), so if the same name is ever declared twice (e.g. a leftover
+    // duplicate declare_variable/declare_constant), the second, "winning"
+    // value would silently render at the *first* declaration's old position
+    // instead of where it actually happens in the generation order — deleting
+    // before reassigning forces it to move to the end, where it belongs.
+    const setDeclaration = (name: string, decl: string) => {
+        const key = `decl_var_${name}`;
+        delete (g as any).definitions_[key];
+        (g as any).definitions_[key] = decl;
+    };
+
+    // Auto-declare fallback for a variable that has no explicit `declare_variable`
+    // block: only fills in decl_var_ if nothing has claimed it yet, so it can
+    // never clobber an explicit declaration regardless of which block Blockly
+    // happens to generate first (declare_variable's own write is unconditional,
+    // so it always wins in the end either way — this just stops the *other*
+    // direction: this fallback overwriting an already-explicit declaration).
+    const declareVarIfAbsent = (name: string, decl: string) => {
+        const key = `decl_var_${name}`;
+        if (!(g as any).definitions_[key]) (g as any).definitions_[key] = decl;
+    };
+
     f['variables_get_dynamic'] = (b) => {
         const varId = b.getFieldValue('VAR');
         const name = g.getVariableName(varId);
-        if (!paramVarIds.has(varId)) {
+        if (!hasOwnDeclaration(varId) && hasExplicitCppType(b, varId)) {
             const { type, init } = cppTypeInfo(b, varId);
-            (g as any).definitions_[`decl_var_${name}`] = `${storageClass()}${type} ${name} = ${init};`;
+            declareVarIfAbsent(name, `${storageClass()}${type} ${name} = ${init};`);
         }
         return [name, ORDER.ATOMIC];
     };
@@ -463,28 +569,27 @@ export function registerCppLanguageBlocks(
         const name = g.getVariableName(varId);
         const { type, init } = cppTypeInfo(b, varId);
         const value = val(b, 'VALUE', ORDER.NONE, init);
-        if (!paramVarIds.has(varId)) {
-            (g as any).definitions_[`decl_var_${name}`] = `${storageClass()}${type} ${name} = ${init};`;
+        if (!hasOwnDeclaration(varId) && hasExplicitCppType(b, varId)) {
+            declareVarIfAbsent(name, `${storageClass()}${type} ${name} = ${init};`);
         }
         return `${name} = ${value};\n`;
     };
 
+    // variables_get/variables_set/math_change (Blockly's plain, untyped
+    // variable blocks) never auto-declare: they have no type information to
+    // offer beyond a blind "int" guess, and now that declare_variable exists,
+    // using one of these on a variable nothing has declared is a real mistake
+    // that should surface as a compiler error, not get silently papered over
+    // with a wrong, unstatic global.
     f['variables_get'] = (b) => {
         const varId = b.getFieldValue('VAR');
-        const name = g.getVariableName(varId);
-        if (!paramVarIds.has(varId)) {
-            (g as any).definitions_[`decl_var_${name}`] = `${storageClass()}int ${name} = 0;`;
-        }
-        return [name, ORDER.ATOMIC];
+        return [g.getVariableName(varId), ORDER.ATOMIC];
     };
 
     f['variables_set'] = (b) => {
         const varId = b.getFieldValue('VAR');
         const value = val(b, 'VALUE', ORDER.NONE, '0');
         const name = g.getVariableName(varId);
-        if (!paramVarIds.has(varId)) {
-            (g as any).definitions_[`decl_var_${name}`] = `${storageClass()}int ${name} = 0;`;
-        }
         return `${name} = ${value};\n`;
     };
 
@@ -492,9 +597,6 @@ export function registerCppLanguageBlocks(
         const varId = b.getFieldValue('VAR');
         const delta = val(b, 'DELTA', ORDER.ADDITIVE, '0');
         const name = g.getVariableName(varId);
-        if (!paramVarIds.has(varId)) {
-            (g as any).definitions_[`decl_var_${name}`] = `${storageClass()}int ${name} = 0;`;
-        }
         return `${name} += ${delta};\n`;
     };
 
@@ -610,7 +712,55 @@ export function registerCppLanguageBlocks(
         return value ? `return ${value};\n` : 'return;\n';
     };
 
+    // ── Constants ────────────────────────────────────────────────────────────
+
+    // A `#define` (untyped, unlike declare_variable): purely a preprocessor
+    // text substitution, so it has no C++ linkage at all — never collides
+    // across secondary files the way a variable can (nothing is ever linked;
+    // by link time every use has already been replaced by the literal value
+    // in each translation unit) — no static/isSecondaryFile concern, ever.
+    // #define also isn't lexically scoped to a function the way a real
+    // declaration is (the preprocessor doesn't know what a function is), so
+    // unlike declare_variable there's no local-vs-global placement choice
+    // either: it's always file scope, wherever it's dropped on the canvas.
+    f['declare_constant'] = (b) => {
+        const varId = b.getFieldValue('VAR');
+        const name = g.getVariableName(varId);
+        const value = String(b.getFieldValue('VALUE') ?? '0');
+        setDeclaration(name, `#define ${name} ${value}`);
+        return '';
+    };
+
+    // Reading a constant is identical to reading a plain variable — declare_constant
+    // already put its full `#define` where it belongs, so there's nothing left
+    // to auto-declare or guess a type for here.
+    f['get_constant'] = (b) => {
+        const varId = b.getFieldValue('VAR');
+        return [g.getVariableName(varId), ORDER.ATOMIC];
+    };
+
     // ── Arrays ──────────────────────────────────────────────────────────────
+
+    // Scope follows placement: inside a function/Setup body, this declares a
+    // genuine C++ local (persistent across calls only if "static" is
+    // checked); outside any function (including loose at the top of a
+    // secondary file), it's a file-scope declaration instead — the same
+    // decl_var_ zone scalar variables auto-declare into, but with an
+    // explicit, changeable type and an explicit static/non-static choice
+    // rather than whatever the variable happened to be created with.
+    f['declare_variable'] = (b) => {
+        const varId = b.getFieldValue('VAR');
+        const name = g.getVariableName(varId);
+        const type = b.getFieldValue('TYPE');
+        const isStatic = b.getFieldValue('STATIC') === 'TRUE';
+        const init = defaultInitForCppType(type);
+        const decl = `${isStatic ? 'static ' : ''}${type} ${name} = ${init};`;
+        if (isInsideFunction(b)) {
+            return `${decl}\n`;
+        }
+        setDeclaration(name, decl);
+        return '';
+    };
 
     // Declaration only: writes to the same decl_var_ zone as scalar variables
     // (variables_get_dynamic etc.) and returns no inline code. array_get/
@@ -621,7 +771,7 @@ export function registerCppLanguageBlocks(
         const name = g.getVariableName(varId);
         const elementType = b.getFieldValue('TYPE');
         const size = b.getFieldValue('SIZE');
-        (g as any).definitions_[`decl_var_${name}`] = `${storageClass()}${elementType} ${name}[${size}] = {};`;
+        setDeclaration(name, `${storageClass()}${elementType} ${name}[${size}] = {};`);
         return '';
     };
 

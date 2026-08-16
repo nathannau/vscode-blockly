@@ -35,6 +35,15 @@ export interface LanguageProfile {
              * have a "secondary file" concept (e.g. python) can ignore it.
              */
             isSecondaryFile: () => boolean;
+            /**
+             * Live read of the set of variable ids with their own local
+             * declaration somewhere in the workspace (recomputed once per
+             * generation run — see the cpp target's init()). A variable in
+             * this set never gets an auto-declared global fallback, the same
+             * way a procedure parameter (paramVarIds) doesn't. Also a
+             * function for the same staleness reason as isSecondaryFile.
+             */
+            localDeclaredVarIds: () => ReadonlySet<string>;
         },
     ): void;
 }

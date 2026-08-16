@@ -57,5 +57,11 @@
   "INLINE_X_INPUTS": "Wbuduj %1 bloków",
   "EXTERNAL_X_INPUTS": "Zewnętrzne %1 bloków",
   "ARRAY_DECLARE_MSG": "zadeklaruj tablicę %1 typu %2 rozmiar %3",
-  "ARRAY_DECLARE_TOOLTIP": "Deklaruje nową tablicę (kolekcję o stałym rozmiarze, zainicjowaną zerami, wartości danego typu). Umieść raz na tablicę; do odczytu/zapisu elementów użyj gdzie indziej bloków \"array get\"/\"array set\"."
+  "ARRAY_DECLARE_TOOLTIP": "Deklaruje nową tablicę (kolekcję o stałym rozmiarze, zainicjowaną zerami, wartości danego typu). Umieść raz na tablicę; do odczytu/zapisu elementów użyj gdzie indziej bloków \"array get\"/\"array set\".",
+  "DECLARE_VARIABLE_MSG": "zadeklaruj %1 jako %2 static %3",
+  "DECLARE_VARIABLE_TOOLTIP": "Deklaruje zmienną z jawnym (zmienialnym) typem. Umieszczona wewnątrz funkcji lub Setup jest zmienną lokalną — zaznacz \"static\", aby zachować jej wartość między wywołaniami. Umieszczona poza jakąkolwiek funkcją (np. luźno w pliku pomocniczym), jest zamiast tego deklaracją na poziomie pliku.",
+  "DECLARE_CONSTANT_MSG": "zdefiniuj stałą %1 = %2",
+  "DECLARE_CONSTANT_TOOLTIP": "Deklaruje stałą jako \"#define\" (bez typu, zwykłe podstawienie tekstu). W przeciwieństwie do declare_variable nigdy nie jest lokalna — #define nie jest powiązany z funkcją — i jest zawsze bezpieczny między plikami pomocniczymi bez potrzeby \"static\": nie ma żadnego łączenia w C++, ponieważ każde użycie jest zastępowane wartością dosłowną jeszcze przed uruchomieniem kompilatora.",
+  "GET_CONSTANT_TOOLTIP": "Odczytuje wartość stałej zadeklarowanej za pomocą \"declare constant\".",
+  "NEW_CONSTANT": "Utwórz stałą…"
 }

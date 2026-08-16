@@ -25,6 +25,6 @@ export const cppLanguageProfile: LanguageProfile = {
     reservedWords: CPP_KEYWORDS,
     precedence: CPP_PRECEDENCE,
     registerLanguageBlocks(generator, ctx) {
-        registerCppLanguageBlocks(generator, ctx.paramVarIds, ctx.isSecondaryFile);
+        registerCppLanguageBlocks(generator, ctx.paramVarIds, ctx.isSecondaryFile, ctx.localDeclaredVarIds);
     },
 };

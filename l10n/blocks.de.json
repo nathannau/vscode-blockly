@@ -57,5 +57,11 @@
   "INLINE_X_INPUTS": "%1 Blöcke inline",
   "EXTERNAL_X_INPUTS": "%1 Blöcke extern",
   "ARRAY_DECLARE_MSG": "Array %1 deklarieren, Typ %2, Größe %3",
-  "ARRAY_DECLARE_TOOLTIP": "Deklariert ein neues Array (eine Sammlung fester Größe mit Werten des angegebenen Typs, mit Null initialisiert). Einmal pro Array platzieren; zum Lesen/Schreiben der Elemente an anderer Stelle \"array get\"/\"array set\" verwenden."
+  "ARRAY_DECLARE_TOOLTIP": "Deklariert ein neues Array (eine Sammlung fester Größe mit Werten des angegebenen Typs, mit Null initialisiert). Einmal pro Array platzieren; zum Lesen/Schreiben der Elemente an anderer Stelle \"array get\"/\"array set\" verwenden.",
+  "DECLARE_VARIABLE_MSG": "%1 deklarieren als %2 static %3",
+  "DECLARE_VARIABLE_TOOLTIP": "Deklariert eine Variable mit einem expliziten (änderbaren) Typ. Innerhalb einer Funktion oder von Setup platziert, ist es eine lokale Variable — aktiviere \"static\", um den Wert zwischen Aufrufen zu behalten. Außerhalb jeder Funktion platziert (z. B. lose in einer sekundären Datei), ist es stattdessen eine Deklaration auf Dateiebene.",
+  "DECLARE_CONSTANT_MSG": "Konstante %1 definieren = %2",
+  "DECLARE_CONSTANT_TOOLTIP": "Deklariert eine Konstante als \"#define\" (ungetypt, reine Textersetzung). Anders als declare_variable ist sie nie lokal — ein #define ist nicht an eine Funktion gebunden — und ist über sekundäre Dateien hinweg immer sicher, ganz ohne \"static\": Es hat überhaupt keine C++-Bindung, da jede Verwendung schon vor dem Compilerlauf durch ihren literalen Wert ersetzt wird.",
+  "GET_CONSTANT_TOOLTIP": "Liest den Wert einer mit \"declare constant\" deklarierten Konstante.",
+  "NEW_CONSTANT": "Konstante erstellen…"
 }

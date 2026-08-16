@@ -113,5 +113,6 @@
   "Catalog \"{0}\" created.": "カタログ \"{0}\" を作成しました。",
   "Secondary file": "セカンダリファイル",
   "This file only contributes includes, declarations, and functions to the project — it will not generate its own setup()/loop().": "このファイルはプロジェクトに include・宣言・関数のみを提供します。独自の setup()/loop() は生成されません。",
-  "This block is part of a \"Secondary file\" and will not be included in the generated code (secondary files don't have their own setup()/loop()).": "このブロックは「セカンダリファイル」の一部であり、生成されたコードには含まれません（セカンダリファイルは独自の setup()/loop() を持ちません）。"
+  "This block is part of a \"Secondary file\" and will not be included in the generated code (secondary files don't have their own setup()/loop()).": "このブロックは「セカンダリファイル」の一部であり、生成されたコードには含まれません（セカンダリファイルは独自の setup()/loop() を持ちません）。",
+  "Constants": "定数"
 }

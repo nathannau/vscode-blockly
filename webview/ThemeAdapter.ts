@@ -20,6 +20,7 @@ const BUILTIN_DEFAULTS: Record<string, string> = {
     'Loops':     '#C586C0',   // VS Code control-flow purple
     'Math':      '#B5CEA8',   // VS Code number-literal green
     'Text':      '#CE9178',   // VS Code string-literal orange
+    'Constants': '#D7BA7D',   // VS Code readonly/constant gold
     'Variables': '#4DB6D4',   // Deeper cyan (readable white text)
     'Arrays':    '#4EC9B0',   // VS Code type-annotation teal
     'Functions': '#B8A848',   // Deeper olive-yellow (readable white text)

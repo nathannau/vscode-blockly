@@ -113,5 +113,6 @@
   "Catalog \"{0}\" created.": "Katalog \"{0}\" byl vytvořen.",
   "Secondary file": "Sekundární soubor",
   "This file only contributes includes, declarations, and functions to the project — it will not generate its own setup()/loop().": "Tento soubor přispívá do projektu pouze includy, deklaracemi a funkcemi — nebude generovat vlastní setup()/loop().",
-  "This block is part of a \"Secondary file\" and will not be included in the generated code (secondary files don't have their own setup()/loop()).": "Tento blok je součástí \"Sekundárního souboru\" a nebude zahrnut do vygenerovaného kódu (sekundární soubory nemají vlastní setup()/loop())."
+  "This block is part of a \"Secondary file\" and will not be included in the generated code (secondary files don't have their own setup()/loop()).": "Tento blok je součástí \"Sekundárního souboru\" a nebude zahrnut do vygenerovaného kódu (sekundární soubory nemají vlastní setup()/loop()).",
+  "Constants": "Konstanty"
 }

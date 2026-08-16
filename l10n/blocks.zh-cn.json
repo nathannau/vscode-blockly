@@ -57,5 +57,11 @@
   "INLINE_X_INPUTS": "内联 %1 个积木",
   "EXTERNAL_X_INPUTS": "外置 %1 个积木",
   "ARRAY_DECLARE_MSG": "声明数组 %1，类型 %2，大小 %3",
-  "ARRAY_DECLARE_TOOLTIP": "声明一个新数组（指定类型、固定大小、初始化为零的值集合）。每个数组只需放置一次；在其他地方使用 \"array get\"/\"array set\" 读取或写入其元素。"
+  "ARRAY_DECLARE_TOOLTIP": "声明一个新数组（指定类型、固定大小、初始化为零的值集合）。每个数组只需放置一次；在其他地方使用 \"array get\"/\"array set\" 读取或写入其元素。",
+  "DECLARE_VARIABLE_MSG": "声明 %1 为 %2 static %3",
+  "DECLARE_VARIABLE_TOOLTIP": "声明一个具有明确（可更改）类型的变量。放在函数或 Setup 内部时，它是局部变量——勾选 \"static\" 可在调用之间保留其值。放在任何函数之外时（例如单独放在次要文件中），则是文件作用域声明。",
+  "DECLARE_CONSTANT_MSG": "定义常量 %1 = %2",
+  "DECLARE_CONSTANT_TOOLTIP": "将常量声明为 \"#define\"（无类型，纯文本替换）。与 declare_variable 不同，它绝不是局部的——#define 不限定于某个函数的作用域——并且在次要文件之间始终是安全的，无需 \"static\"：它完全没有 C++ 链接，因为每处使用都会在编译器运行之前被替换为其字面值。",
+  "GET_CONSTANT_TOOLTIP": "读取用 \"declare constant\" 声明的常量的值。",
+  "NEW_CONSTANT": "创建常量…"
 }

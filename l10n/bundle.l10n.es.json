@@ -113,5 +113,6 @@
   "Catalog \"{0}\" created.": "Catálogo \"{0}\" creado.",
   "Secondary file": "Archivo secundario",
   "This file only contributes includes, declarations, and functions to the project — it will not generate its own setup()/loop().": "Este archivo solo aporta includes, declaraciones y funciones al proyecto; no generará su propio setup()/loop().",
-  "This block is part of a \"Secondary file\" and will not be included in the generated code (secondary files don't have their own setup()/loop()).": "Este bloque forma parte de un \"Archivo secundario\" y no se incluirá en el código generado (los archivos secundarios no tienen su propio setup()/loop())."
+  "This block is part of a \"Secondary file\" and will not be included in the generated code (secondary files don't have their own setup()/loop()).": "Este bloque forma parte de un \"Archivo secundario\" y no se incluirá en el código generado (los archivos secundarios no tienen su propio setup()/loop()).",
+  "Constants": "Constantes"
 }

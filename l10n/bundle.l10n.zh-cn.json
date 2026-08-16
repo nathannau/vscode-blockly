@@ -113,5 +113,6 @@
   "Catalog \"{0}\" created.": "已创建目录 \"{0}\"。",
   "Secondary file": "次要文件",
   "This file only contributes includes, declarations, and functions to the project — it will not generate its own setup()/loop().": "此文件仅向项目提供 include、声明和函数——不会生成自己的 setup()/loop()。",
-  "This block is part of a \"Secondary file\" and will not be included in the generated code (secondary files don't have their own setup()/loop()).": "此积木属于\"次要文件\"，不会包含在生成的代码中（次要文件没有自己的 setup()/loop()）。"
+  "This block is part of a \"Secondary file\" and will not be included in the generated code (secondary files don't have their own setup()/loop()).": "此积木属于\"次要文件\"，不会包含在生成的代码中（次要文件没有自己的 setup()/loop()）。",
+  "Constants": "常量"
 }

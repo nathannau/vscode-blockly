@@ -57,5 +57,11 @@
   "INLINE_X_INPUTS": "%1 Bloğu Satır İçi Yap",
   "EXTERNAL_X_INPUTS": "%1 Bloğu Dış Yap",
   "ARRAY_DECLARE_MSG": "%1 dizisini %2 türünde %3 boyutunda tanımla",
-  "ARRAY_DECLARE_TOOLTIP": "Yeni bir dizi tanımlar (belirtilen türde değerlerden oluşan, sıfırla başlatılmış, sabit boyutlu bir koleksiyon). Dizi başına bir kez yerleştirin; öğeleri okumak/yazmak için başka bir yerde \"array get\"/\"array set\" kullanın."
+  "ARRAY_DECLARE_TOOLTIP": "Yeni bir dizi tanımlar (belirtilen türde değerlerden oluşan, sıfırla başlatılmış, sabit boyutlu bir koleksiyon). Dizi başına bir kez yerleştirin; öğeleri okumak/yazmak için başka bir yerde \"array get\"/\"array set\" kullanın.",
+  "DECLARE_VARIABLE_MSG": "%1 değişkenini %2 olarak tanımla static %3",
+  "DECLARE_VARIABLE_TOOLTIP": "Açık (değiştirilebilir) bir türle bir değişken tanımlar. Bir fonksiyonun veya Setup'ın içine yerleştirildiğinde yerel bir değişkendir — çağrılar arasında değerini korumak için \"static\" işaretleyin. Herhangi bir fonksiyonun dışına yerleştirildiğinde (örn. ikincil bir dosyada tek başına), bunun yerine dosya kapsamlı bir tanımdır.",
+  "DECLARE_CONSTANT_MSG": "%1 sabitini tanımla = %2",
+  "DECLARE_CONSTANT_TOOLTIP": "Bir sabiti \"#define\" olarak tanımlar (türsüz, basit metin ikamesi). declare_variable'ın aksine hiçbir zaman yerel değildir — bir #define bir fonksiyona bağlı değildir — ve \"static\" gerektirmeden ikincil dosyalar arasında her zaman güvenlidir: hiçbir C++ bağlantısı yoktur, çünkü her kullanım derleyici çalışmadan önce bile gerçek değeriyle değiştirilir.",
+  "GET_CONSTANT_TOOLTIP": "\"declare constant\" ile tanımlanmış bir sabitin değerini okur.",
+  "NEW_CONSTANT": "Sabit oluştur…"
 }

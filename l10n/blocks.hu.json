@@ -57,5 +57,11 @@
   "INLINE_X_INPUTS": "%1 blokk soron belüli megjelenítése",
   "EXTERNAL_X_INPUTS": "%1 blokk külső megjelenítése",
   "ARRAY_DECLARE_MSG": "%1 tömb deklarálása, típus: %2, méret: %3",
-  "ARRAY_DECLARE_TOOLTIP": "Új tömböt deklarál (rögzített méretű, nullával inicializált gyűjtemény az adott típusú értékekből). Tömbönként egyszer helyezd el; az elemek olvasásához/írásához használd máshol az \"array get\"/\"array set\" blokkokat."
+  "ARRAY_DECLARE_TOOLTIP": "Új tömböt deklarál (rögzített méretű, nullával inicializált gyűjtemény az adott típusú értékekből). Tömbönként egyszer helyezd el; az elemek olvasásához/írásához használd máshol az \"array get\"/\"array set\" blokkokat.",
+  "DECLARE_VARIABLE_MSG": "%1 deklarálása mint %2 static %3",
+  "DECLARE_VARIABLE_TOOLTIP": "Egy változót deklarál explicit (megváltoztatható) típussal. Egy függvényen vagy a Setup-on belül elhelyezve ez egy lokális változó — jelöld be a \"static\"-ot, hogy megőrizze értékét a hívások között. Bármely függvényen kívül elhelyezve (pl. szabadon egy másodlagos fájlban), ehelyett fájl szintű deklaráció.",
+  "DECLARE_CONSTANT_MSG": "%1 konstans definiálása = %2",
+  "DECLARE_CONSTANT_TOOLTIP": "Egy konstanst \"#define\"-ként deklarál (típus nélkül, egyszerű szöveghelyettesítés). A declare_variable-tól eltérően soha nem lokális — egy #define nincs egy függvényhez kötve —, és mindig biztonságos másodlagos fájlok között \"static\" nélkül is: egyáltalán nincs C++ linkelése, mivel minden felhasználást a szó szerinti értékére cserélnek, még mielőtt a fordító lefutna.",
+  "GET_CONSTANT_TOOLTIP": "Beolvassa egy \"declare constant\"-tal deklarált konstans értékét.",
+  "NEW_CONSTANT": "Konstans létrehozása…"
 }

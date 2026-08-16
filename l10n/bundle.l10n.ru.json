@@ -113,5 +113,6 @@
   "Catalog \"{0}\" created.": "Каталог \"{0}\" создан.",
   "Secondary file": "Вторичный файл",
   "This file only contributes includes, declarations, and functions to the project — it will not generate its own setup()/loop().": "Этот файл добавляет в проект только includes, объявления и функции — он не будет генерировать собственный setup()/loop().",
-  "This block is part of a \"Secondary file\" and will not be included in the generated code (secondary files don't have their own setup()/loop()).": "Этот блок является частью «Вторичного файла» и не будет включён в сгенерированный код (у вторичных файлов нет собственного setup()/loop())."
+  "This block is part of a \"Secondary file\" and will not be included in the generated code (secondary files don't have their own setup()/loop()).": "Этот блок является частью «Вторичного файла» и не будет включён в сгенерированный код (у вторичных файлов нет собственного setup()/loop()).",
+  "Constants": "Константы"
 }
