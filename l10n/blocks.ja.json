@@ -55,5 +55,7 @@
   "ADD_X_COMMENTS": "%1 個のブロックにコメントを追加",
   "REMOVE_X_COMMENTS": "%1 個のブロックからコメントを削除",
   "INLINE_X_INPUTS": "%1 個のブロックをインライン化",
-  "EXTERNAL_X_INPUTS": "%1 個のブロックを外部入力に"
+  "EXTERNAL_X_INPUTS": "%1 個のブロックを外部入力に",
+  "ARRAY_DECLARE_MSG": "配列 %1（型 %2、サイズ %3）を宣言",
+  "ARRAY_DECLARE_TOOLTIP": "新しい配列を宣言します（指定した型の値を持つ、ゼロ初期化された固定サイズのコレクション）。配列ごとに一度だけ配置してください。要素の読み書きには別の場所で「array get」「array set」を使用します。"
 }

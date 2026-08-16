@@ -55,5 +55,7 @@
   "ADD_X_COMMENTS": "Adicionar Comentário a %1 Blocos",
   "REMOVE_X_COMMENTS": "Remover Comentário de %1 Blocos",
   "INLINE_X_INPUTS": "Em Linha %1 Blocos",
-  "EXTERNAL_X_INPUTS": "Externo %1 Blocos"
+  "EXTERNAL_X_INPUTS": "Externo %1 Blocos",
+  "ARRAY_DECLARE_MSG": "declarar array %1 do tipo %2 tamanho %3",
+  "ARRAY_DECLARE_TOOLTIP": "Declara um novo array (uma coleção de tamanho fixo, inicializada com zero, de valores do tipo indicado). Coloque uma vez por array; use \"array get\"/\"array set\" em outro lugar para ler ou escrever seus elementos."
 }

@@ -55,5 +55,7 @@
   "ADD_X_COMMENTS": "为 %1 个积木添加注释",
   "REMOVE_X_COMMENTS": "从 %1 个积木移除注释",
   "INLINE_X_INPUTS": "内联 %1 个积木",
-  "EXTERNAL_X_INPUTS": "外置 %1 个积木"
+  "EXTERNAL_X_INPUTS": "外置 %1 个积木",
+  "ARRAY_DECLARE_MSG": "声明数组 %1，类型 %2，大小 %3",
+  "ARRAY_DECLARE_TOOLTIP": "声明一个新数组（指定类型、固定大小、初始化为零的值集合）。每个数组只需放置一次；在其他地方使用 \"array get\"/\"array set\" 读取或写入其元素。"
 }

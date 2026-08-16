@@ -55,5 +55,7 @@
   "ADD_X_COMMENTS": "Ajouter un commentaire à %1 blocs",
   "REMOVE_X_COMMENTS": "Supprimer le commentaire de %1 blocs",
   "INLINE_X_INPUTS": "Entrées en ligne pour %1 blocs",
-  "EXTERNAL_X_INPUTS": "Entrées externes pour %1 blocs"
+  "EXTERNAL_X_INPUTS": "Entrées externes pour %1 blocs",
+  "ARRAY_DECLARE_MSG": "déclarer le tableau %1 de type %2 taille %3",
+  "ARRAY_DECLARE_TOOLTIP": "Déclare un nouveau tableau (une collection de taille fixe, initialisée à zéro, de valeurs du type donné). À placer une seule fois par tableau ; utilisez « array get »/« array set » ailleurs pour lire ou écrire ses éléments."
 }

@@ -55,5 +55,7 @@
   "ADD_X_COMMENTS": "為 %1 個積木新增註解",
   "REMOVE_X_COMMENTS": "從 %1 個積木移除註解",
   "INLINE_X_INPUTS": "內嵌 %1 個積木",
-  "EXTERNAL_X_INPUTS": "外置 %1 個積木"
+  "EXTERNAL_X_INPUTS": "外置 %1 個積木",
+  "ARRAY_DECLARE_MSG": "宣告陣列 %1，類型 %2，大小 %3",
+  "ARRAY_DECLARE_TOOLTIP": "宣告一個新陣列（指定類型、固定大小、初始化為零的值集合）。每個陣列只需放置一次；在其他地方使用「array get」「array set」讀取或寫入其元素。"
 }

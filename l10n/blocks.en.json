@@ -11,6 +11,8 @@
   "TYPE_CAST_TOOLTIP": "Explicit C++ type cast.",
   "RETURN_MSG": "return %1",
   "RETURN_TOOLTIP": "Return a value from a function. Leave empty for void return.",
+  "ARRAY_DECLARE_MSG": "declare array %1 of %2 size %3",
+  "ARRAY_DECLARE_TOOLTIP": "Declares a new array (a fixed-size, zero-initialized collection of values of the given type). Place once per array; use \"array get\"/\"array set\" elsewhere to read or write its elements.",
   "ARRAY_GET_TOOLTIP": "Get an element from an array by index.",
   "ARRAY_SET_TOOLTIP": "Set an element in an array by index.",
   "SWITCH_LABEL": "switch",

@@ -55,5 +55,7 @@
   "ADD_X_COMMENTS": "블록 %1개에 주석 추가",
   "REMOVE_X_COMMENTS": "블록 %1개에서 주석 제거",
   "INLINE_X_INPUTS": "블록 %1개 인라인",
-  "EXTERNAL_X_INPUTS": "블록 %1개 외부"
+  "EXTERNAL_X_INPUTS": "블록 %1개 외부",
+  "ARRAY_DECLARE_MSG": "배열 %1 선언 (형식 %2, 크기 %3)",
+  "ARRAY_DECLARE_TOOLTIP": "새 배열을 선언합니다(지정된 형식의 값을 담는, 0으로 초기화된 고정 크기 컬렉션). 배열마다 한 번만 배치하세요. 요소를 읽거나 쓰려면 다른 곳에서 \"array get\"/\"array set\"을 사용하세요."
 }

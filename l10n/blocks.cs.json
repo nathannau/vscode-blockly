@@ -55,5 +55,7 @@
   "ADD_X_COMMENTS": "Přidat komentář k %1 blokům",
   "REMOVE_X_COMMENTS": "Odebrat komentář z %1 bloků",
   "INLINE_X_INPUTS": "Vstupy v řádku u %1 bloků",
-  "EXTERNAL_X_INPUTS": "Externí vstupy u %1 bloků"
+  "EXTERNAL_X_INPUTS": "Externí vstupy u %1 bloků",
+  "ARRAY_DECLARE_MSG": "deklarovat pole %1 typu %2 velikosti %3",
+  "ARRAY_DECLARE_TOOLTIP": "Deklaruje nové pole (kolekci hodnot daného typu s pevnou velikostí, inicializovanou na nulu). Umístěte jednou na pole; pro čtení nebo zápis prvků použijte jinde bloky \"array get\"/\"array set\"."
 }

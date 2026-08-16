@@ -348,6 +348,7 @@ document.addEventListener("DOMContentLoaded", () => {
         {
             kind: 'category', _key: 'Arrays', name: translateCategory('Arrays'), categorystyle: categoryStyleFor('Arrays'),
             contents: [
+                { kind: 'block', type: 'array_declare' },
                 { kind: 'block', type: 'array_get' },
                 { kind: 'block', type: 'array_set' },
             ]

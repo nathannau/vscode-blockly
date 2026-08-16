@@ -157,6 +157,31 @@ function defineCustomBlocks(): void {
             tooltip: '%{BKY_RETURN_TOOLTIP}',
         },
         {
+            type: 'array_declare',
+            message0: '%{BKY_ARRAY_DECLARE_MSG}',
+            args0: [
+                { type: 'field_variable', name: 'VAR', variable: 'arr' },
+                {
+                    type: 'field_dropdown', name: 'TYPE',
+                    options: [
+                        ['int', 'int'], ['long', 'long'],
+                        ['int8_t', 'int8_t'], ['int16_t', 'int16_t'], ['int32_t', 'int32_t'],
+                        ['unsigned int', 'unsigned int'], ['unsigned long', 'unsigned long'],
+                        ['byte', 'byte'], ['word', 'word'],
+                        ['uint8_t', 'uint8_t'], ['uint16_t', 'uint16_t'], ['uint32_t', 'uint32_t'],
+                        ['float', 'float'], ['double', 'double'],
+                        ['bool', 'bool'], ['char', 'char'], ['String', 'String'],
+                    ],
+                },
+                { type: 'field_number', name: 'SIZE', value: 8, min: 1, precision: 1 },
+            ],
+            inputsInline: true,
+            previousStatement: null,
+            nextStatement: null,
+            style: blockStyleFor('Arrays'),
+            tooltip: '%{BKY_ARRAY_DECLARE_TOOLTIP}',
+        },
+        {
             type: 'array_get',
             message0: '%1 [ %2 ]',
             args0: [
@@ -586,6 +611,19 @@ export function registerCppLanguageBlocks(
     };
 
     // ── Arrays ──────────────────────────────────────────────────────────────
+
+    // Declaration only: writes to the same decl_var_ zone as scalar variables
+    // (variables_get_dynamic etc.) and returns no inline code. array_get/
+    // array_set below only ever *index into* an array — this is what actually
+    // brings one into existence, value-initialized to all zeros.
+    f['array_declare'] = (b) => {
+        const varId = b.getFieldValue('VAR');
+        const name = g.getVariableName(varId);
+        const elementType = b.getFieldValue('TYPE');
+        const size = b.getFieldValue('SIZE');
+        (g as any).definitions_[`decl_var_${name}`] = `${storageClass()}${elementType} ${name}[${size}] = {};`;
+        return '';
+    };
 
     f['array_get'] = (b) => {
         const varId = b.getFieldValue('VAR');

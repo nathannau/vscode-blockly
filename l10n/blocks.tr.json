@@ -55,5 +55,7 @@
   "ADD_X_COMMENTS": "%1 Bloğa Yorum Ekle",
   "REMOVE_X_COMMENTS": "%1 Bloktan Yorum Kaldır",
   "INLINE_X_INPUTS": "%1 Bloğu Satır İçi Yap",
-  "EXTERNAL_X_INPUTS": "%1 Bloğu Dış Yap"
+  "EXTERNAL_X_INPUTS": "%1 Bloğu Dış Yap",
+  "ARRAY_DECLARE_MSG": "%1 dizisini %2 türünde %3 boyutunda tanımla",
+  "ARRAY_DECLARE_TOOLTIP": "Yeni bir dizi tanımlar (belirtilen türde değerlerden oluşan, sıfırla başlatılmış, sabit boyutlu bir koleksiyon). Dizi başına bir kez yerleştirin; öğeleri okumak/yazmak için başka bir yerde \"array get\"/\"array set\" kullanın."
 }
