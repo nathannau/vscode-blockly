@@ -239,6 +239,7 @@ function defineCustomBlocks(): void {
                 { type: 'field_variable', name: 'VAR', variable: 'arr' },
                 { type: 'field_dropdown', name: 'TYPE', options: SCALAR_TYPE_OPTIONS },
                 { type: 'field_number', name: 'SIZE', value: 8, min: 1, precision: 1 },
+                { type: 'field_checkbox', name: 'STATIC', checked: false },
             ],
             inputsInline: true,
             previousStatement: null,
@@ -766,12 +767,15 @@ export function registerCppLanguageBlocks(
     // (variables_get_dynamic etc.) and returns no inline code. array_get/
     // array_set below only ever *index into* an array — this is what actually
     // brings one into existence, value-initialized to all zeros.
+    // Static if the "static" checkbox is ticked *or* the file is secondary
+    // (the latter kept as a safety net for arrays that predate the checkbox).
     f['array_declare'] = (b) => {
         const varId = b.getFieldValue('VAR');
         const name = g.getVariableName(varId);
         const elementType = b.getFieldValue('TYPE');
         const size = b.getFieldValue('SIZE');
-        setDeclaration(name, `${storageClass()}${elementType} ${name}[${size}] = {};`);
+        const isStatic = b.getFieldValue('STATIC') === 'TRUE' || isSecondaryFile();
+        setDeclaration(name, `${isStatic ? 'static ' : ''}${elementType} ${name}[${size}] = {};`);
         return '';
     };
 
