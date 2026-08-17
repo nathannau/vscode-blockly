@@ -63,5 +63,9 @@
   "DECLARE_CONSTANT_MSG": "definir constante %1 = %2",
   "DECLARE_CONSTANT_TOOLTIP": "Declara uma constante como um \"#define\" (sem tipo, simples substituição de texto). Ao contrário de declare_variable, nunca é local — um #define não é vinculado a uma função — e é sempre seguro entre arquivos secundários sem precisar de \"static\": não tem nenhuma ligação em C++, já que cada uso é substituído pelo seu valor literal antes mesmo de o compilador ser executado.",
   "GET_CONSTANT_TOOLTIP": "Lê o valor de uma constante declarada com \"declare constant\".",
-  "NEW_CONSTANT": "Criar constante…"
+  "NEW_CONSTANT": "Criar constante…",
+  "NEW_ARRAY": "Criar array…",
+  "CLEANUP_VARIABLES": "Limpar variáveis não utilizadas",
+  "CLEANUP_CONSTANTS": "Limpar constantes não utilizadas",
+  "CLEANUP_ARRAYS": "Limpar arrays não utilizados"
 }

@@ -63,5 +63,9 @@
   "DECLARE_CONSTANT_MSG": "定数 %1 を定義 = %2",
   "DECLARE_CONSTANT_TOOLTIP": "定数を「#define」として宣言します（型なし、単純なテキスト置換）。declare_variable と異なり、これは決してローカルにはなりません — #define は関数にスコープされません — そして「static」を必要とせず、常にセカンダリファイル間で安全です。コンパイラが実行される前に、すべての使用箇所がリテラル値に置き換えられるため、C++ のリンクは一切発生しません。",
   "GET_CONSTANT_TOOLTIP": "「declare constant」で宣言された定数の値を読み取ります。",
-  "NEW_CONSTANT": "定数を作成…"
+  "NEW_CONSTANT": "定数を作成…",
+  "NEW_ARRAY": "配列を作成…",
+  "CLEANUP_VARIABLES": "未使用の変数を整理",
+  "CLEANUP_CONSTANTS": "未使用の定数を整理",
+  "CLEANUP_ARRAYS": "未使用の配列を整理"
 }

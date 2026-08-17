@@ -6,7 +6,7 @@ import { configureBlocklyLocale, installDialogBridge, injectThemedWorkspace } fr
 import { CodeFactory } from './codegen/core/CodeFactory';
 import { isRuntimeSupported, listSupportedRuntimes } from './codegen/core/generatorRegistry';
 import { setCommentAnnotation } from './codegen/core/commentAnnotation';
-import { initTypedVariableModal, initVariableDeclareCategory, initConstantCategory, initWorkspacePlugins, CPP_VARIABLE_TYPES, ThemedMinimap } from './plugins';
+import { initTypedVariableModal, initVariableDeclareCategory, initConstantCategory, initArrayCategory, initWorkspacePlugins, CPP_VARIABLE_TYPES, ThemedMinimap } from './plugins';
 import { initCppProcedureFlyout } from './custom-blocks/cppProcedureBlocks';
 // The `hat_event_style` extension, `field_param_input`, and the rest of the
 // catalog-block field surface are registered by ./plugins (→ ./blockFields).
@@ -62,6 +62,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initTypedVariableModal(workspace, CPP_VARIABLE_TYPES, mergedBlockMessages);
     initVariableDeclareCategory(workspace);
     initConstantCategory(workspace);
+    initArrayCategory(workspace);
     initWorkspacePlugins(workspace);
     initCppProcedureFlyout(workspace);
 
@@ -368,12 +369,11 @@ document.addEventListener("DOMContentLoaded", () => {
             custom: 'VARIABLE_WITH_DECLARE',
         },
         {
+            // "Create array…" button (see initArrayCategory) tags the new
+            // variable with ARRAY_VAR_TYPE, so it only shows up here — never
+            // mixed in with, or confused for, regular Variables/Constants.
             kind: 'category', _key: 'Arrays', name: translateCategory('Arrays'), categorystyle: categoryStyleFor('Arrays'),
-            contents: [
-                { kind: 'block', type: 'array_declare' },
-                { kind: 'block', type: 'array_get' },
-                { kind: 'block', type: 'array_set' },
-            ]
+            custom: 'ARRAY_CATEGORY',
         },
         {
             kind: 'category', _key: 'Functions', name: translateCategory('Functions'), categorystyle: categoryStyleFor('Functions'),

@@ -63,5 +63,9 @@
   "DECLARE_CONSTANT_MSG": "definovat konstantu %1 = %2",
   "DECLARE_CONSTANT_TOOLTIP": "Deklaruje konstantu jako \"#define\" (bez typu, prostá textová náhrada). Na rozdíl od declare_variable není nikdy lokální — #define není vázán na funkci — a je vždy bezpečný napříč sekundárními soubory bez potřeby \"static\": nemá vůbec žádné propojení v C++, protože každé použití je nahrazeno svou literální hodnotou ještě před spuštěním kompilátoru.",
   "GET_CONSTANT_TOOLTIP": "Čte hodnotu konstanty deklarované pomocí \"declare constant\".",
-  "NEW_CONSTANT": "Vytvořit konstantu…"
+  "NEW_CONSTANT": "Vytvořit konstantu…",
+  "NEW_ARRAY": "Vytvořit pole…",
+  "CLEANUP_VARIABLES": "Vyčistit nepoužívané proměnné",
+  "CLEANUP_CONSTANTS": "Vyčistit nepoužívané konstanty",
+  "CLEANUP_ARRAYS": "Vyčistit nepoužívaná pole"
 }

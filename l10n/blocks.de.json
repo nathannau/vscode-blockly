@@ -63,5 +63,9 @@
   "DECLARE_CONSTANT_MSG": "Konstante %1 definieren = %2",
   "DECLARE_CONSTANT_TOOLTIP": "Deklariert eine Konstante als \"#define\" (ungetypt, reine Textersetzung). Anders als declare_variable ist sie nie lokal — ein #define ist nicht an eine Funktion gebunden — und ist über sekundäre Dateien hinweg immer sicher, ganz ohne \"static\": Es hat überhaupt keine C++-Bindung, da jede Verwendung schon vor dem Compilerlauf durch ihren literalen Wert ersetzt wird.",
   "GET_CONSTANT_TOOLTIP": "Liest den Wert einer mit \"declare constant\" deklarierten Konstante.",
-  "NEW_CONSTANT": "Konstante erstellen…"
+  "NEW_CONSTANT": "Konstante erstellen…",
+  "NEW_ARRAY": "Array erstellen…",
+  "CLEANUP_VARIABLES": "Nicht verwendete Variablen aufräumen",
+  "CLEANUP_CONSTANTS": "Nicht verwendete Konstanten aufräumen",
+  "CLEANUP_ARRAYS": "Nicht verwendete Arrays aufräumen"
 }

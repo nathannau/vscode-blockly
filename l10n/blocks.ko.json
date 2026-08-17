@@ -63,5 +63,9 @@
   "DECLARE_CONSTANT_MSG": "상수 %1 정의 = %2",
   "DECLARE_CONSTANT_TOOLTIP": "상수를 \"#define\"으로 선언합니다(타입 없음, 단순 텍스트 치환). declare_variable과 달리 이것은 결코 지역적이지 않습니다 — #define은 함수에 범위가 지정되지 않습니다 — 그리고 \"static\"이 필요 없이 항상 보조 파일 간에 안전합니다. 컴파일러가 실행되기도 전에 모든 사용처가 리터럴 값으로 대체되므로 C++ 링크가 전혀 없습니다.",
   "GET_CONSTANT_TOOLTIP": "\"declare constant\"로 선언된 상수의 값을 읽습니다.",
-  "NEW_CONSTANT": "상수 만들기…"
+  "NEW_CONSTANT": "상수 만들기…",
+  "NEW_ARRAY": "배열 만들기…",
+  "CLEANUP_VARIABLES": "사용하지 않는 변수 정리",
+  "CLEANUP_CONSTANTS": "사용하지 않는 상수 정리",
+  "CLEANUP_ARRAYS": "사용하지 않는 배열 정리"
 }

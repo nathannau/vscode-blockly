@@ -63,5 +63,9 @@
   "DECLARE_CONSTANT_MSG": "定义常量 %1 = %2",
   "DECLARE_CONSTANT_TOOLTIP": "将常量声明为 \"#define\"（无类型，纯文本替换）。与 declare_variable 不同，它绝不是局部的——#define 不限定于某个函数的作用域——并且在次要文件之间始终是安全的，无需 \"static\"：它完全没有 C++ 链接，因为每处使用都会在编译器运行之前被替换为其字面值。",
   "GET_CONSTANT_TOOLTIP": "读取用 \"declare constant\" 声明的常量的值。",
-  "NEW_CONSTANT": "创建常量…"
+  "NEW_CONSTANT": "创建常量…",
+  "NEW_ARRAY": "创建数组…",
+  "CLEANUP_VARIABLES": "清理未使用的变量",
+  "CLEANUP_CONSTANTS": "清理未使用的常量",
+  "CLEANUP_ARRAYS": "清理未使用的数组"
 }

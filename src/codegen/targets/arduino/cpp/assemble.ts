@@ -13,6 +13,7 @@
 export interface SketchSections {
     includes: string[];
     declarations: string[];
+    prototypes: string[];
     helpers: string[];
     setup: string[];
 }
@@ -30,16 +31,17 @@ const INDENT = '  ';
 
 /**
  * Split a generator `definitions_` map into ordered sketch sections by key prefix.
- * Prefixes are written by the template engine: import_/include_, decl_, func_, setup_.
+ * Prefixes are written by the template engine: import_/include_, decl_, proto_, func_, setup_.
  * Insertion order is preserved (keys are non-numeric). Unknown prefixes (e.g.
  * cleanup_) are ignored for C++.
  */
 export function categorizeDefinitions(definitions: Record<string, string>): SketchSections {
-    const sections: SketchSections = { includes: [], declarations: [], helpers: [], setup: [] };
+    const sections: SketchSections = { includes: [], declarations: [], prototypes: [], helpers: [], setup: [] };
     for (const [key, value] of Object.entries(definitions)) {
         if (!value) {continue;}
         if (key.startsWith('import_') || key.startsWith('include_')) {sections.includes.push(value);}
         else if (key.startsWith('decl_')) {sections.declarations.push(value);}
+        else if (key.startsWith('proto_')) {sections.prototypes.push(value);}
         else if (key.startsWith('func_')) {sections.helpers.push(value);}
         else if (key.startsWith('setup_')) {sections.setup.push(value);}
     }
@@ -78,6 +80,7 @@ export function assembleSketch(
 
     if (sections.includes.length) {parts.push("// Includes\n" + sections.includes.join('\n') + "\n// End of includes");}
     if (sections.declarations.length) {parts.push("// Global declarations\n" + sections.declarations.join('\n') + "\n// End of global declarations");}
+    if (sections.prototypes.length) {parts.push("// Function prototypes\n" + sections.prototypes.join('\n') + "\n// End of function prototypes");}
     if (sections.helpers.length) {parts.push("// Helper functions\n" + sections.helpers.join('\n') + "\n// End of helper functions");}
 
     if (!isSecondary) {

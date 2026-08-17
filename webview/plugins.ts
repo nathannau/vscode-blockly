@@ -15,7 +15,7 @@ import * as BlockDynamicConnection from '@blockly/block-dynamic-connection';
 import { Multiselect } from '@mit-app-inventor/blockly-plugin-workspace-multiselect';
 
 import './custom-blocks/cppProcedureBlocks';
-import { CONSTANT_VAR_TYPE } from './codegen/languages/cpp/languageBlocks';
+import { CONSTANT_VAR_TYPE, ARRAY_VAR_TYPE } from './codegen/languages/cpp/languageBlocks';
 
 export const CPP_VARIABLE_TYPES: [string, string][] = [
     ['int',     'int'],
@@ -414,7 +414,26 @@ export function initTypedVariableModal(
     };
 }
 
+/**
+ * Deletes every variable of a matching type that no block currently
+ * references. `deleteVariable` "may prompt the user for confirmation" per its
+ * own doc, but only when there's something to warn about — since every
+ * variable passed in here already has zero uses, it's a silent removal.
+ * Snapshots the variable list first: deleting while iterating the workspace's
+ * own (live) list would be modifying it out from under itself mid-loop.
+ */
+function cleanUpUnusedVariables(workspace: Blockly.WorkspaceSvg, matchesType: (type: string) => boolean): void {
+    const varMap = workspace.getVariableMap();
+    for (const v of [...varMap.getAllVariables()]) {
+        if (!matchesType(v.getType())) continue;
+        if (Blockly.Variables.getVariableUsesById(workspace, v.getId()).length === 0) {
+            Blockly.Variables.deleteVariable(workspace, v);
+        }
+    }
+}
+
 const CREATE_VARIABLE_CALLBACK_KEY = 'CREATE_VARIABLE_BUTTON';
+const CLEANUP_VARIABLES_CALLBACK_KEY = 'CLEANUP_VARIABLES_BUTTON';
 
 /**
  * The cpp "Variables" category's flyout: Blockly's classic (name-only)
@@ -429,11 +448,15 @@ const CREATE_VARIABLE_CALLBACK_KEY = 'CREATE_VARIABLE_BUTTON';
  */
 export function initVariableDeclareCategory(workspace: Blockly.WorkspaceSvg): () => void {
     const createFlyout = (): Element[] => {
-        const button = document.createElement('button');
-        button.setAttribute('text', Blockly.Msg['NEW_VARIABLE'] ?? 'Create variable…');
-        button.setAttribute('callbackKey', CREATE_VARIABLE_CALLBACK_KEY);
+        const createButton = document.createElement('button');
+        createButton.setAttribute('text', Blockly.Msg['NEW_VARIABLE'] ?? 'Create variable…');
+        createButton.setAttribute('callbackKey', CREATE_VARIABLE_CALLBACK_KEY);
+        const cleanupButton = document.createElement('button');
+        cleanupButton.setAttribute('text', Blockly.Msg['CLEANUP_VARIABLES'] ?? 'Clean up unused variables');
+        cleanupButton.setAttribute('callbackKey', CLEANUP_VARIABLES_CALLBACK_KEY);
         return [
-            button,
+            createButton,
+            cleanupButton,
             Blockly.utils.xml.textToDom('<block type="variables_get"></block>'),
             Blockly.utils.xml.textToDom('<block type="variables_set"></block>'),
             Blockly.utils.xml.textToDom('<block type="declare_variable"></block>'),
@@ -443,15 +466,21 @@ export function initVariableDeclareCategory(workspace: Blockly.WorkspaceSvg): ()
     workspace.registerButtonCallback(CREATE_VARIABLE_CALLBACK_KEY, (button) => {
         Blockly.Variables.createVariableButtonHandler(button.getTargetWorkspace());
     });
+    workspace.registerButtonCallback(CLEANUP_VARIABLES_CALLBACK_KEY, (button) => {
+        const ws = button.getTargetWorkspace();
+        cleanUpUnusedVariables(ws, (t) => t !== CONSTANT_VAR_TYPE && t !== ARRAY_VAR_TYPE);
+    });
     workspace.registerToolboxCategoryCallback('VARIABLE_WITH_DECLARE', createFlyout);
 
     return () => {
         workspace.removeToolboxCategoryCallback('VARIABLE_WITH_DECLARE');
         workspace.removeButtonCallback(CREATE_VARIABLE_CALLBACK_KEY);
+        workspace.removeButtonCallback(CLEANUP_VARIABLES_CALLBACK_KEY);
     };
 }
 
 const CREATE_CONSTANT_CALLBACK_KEY = 'CREATE_CONSTANT_BUTTON';
+const CLEANUP_CONSTANTS_CALLBACK_KEY = 'CLEANUP_CONSTANTS_BUTTON';
 
 /**
  * The cpp "Constants" category's flyout: its own "Create constant…" button
@@ -463,11 +492,15 @@ const CREATE_CONSTANT_CALLBACK_KEY = 'CREATE_CONSTANT_BUTTON';
  */
 export function initConstantCategory(workspace: Blockly.WorkspaceSvg): () => void {
     const createFlyout = (): Element[] => {
-        const button = document.createElement('button');
-        button.setAttribute('text', Blockly.Msg['NEW_CONSTANT'] ?? 'Create constant…');
-        button.setAttribute('callbackKey', CREATE_CONSTANT_CALLBACK_KEY);
+        const createButton = document.createElement('button');
+        createButton.setAttribute('text', Blockly.Msg['NEW_CONSTANT'] ?? 'Create constant…');
+        createButton.setAttribute('callbackKey', CREATE_CONSTANT_CALLBACK_KEY);
+        const cleanupButton = document.createElement('button');
+        cleanupButton.setAttribute('text', Blockly.Msg['CLEANUP_CONSTANTS'] ?? 'Clean up unused constants');
+        cleanupButton.setAttribute('callbackKey', CLEANUP_CONSTANTS_CALLBACK_KEY);
         return [
-            button,
+            createButton,
+            cleanupButton,
             Blockly.utils.xml.textToDom('<block type="declare_constant"></block>'),
             Blockly.utils.xml.textToDom('<block type="get_constant"></block>'),
         ];
@@ -476,10 +509,56 @@ export function initConstantCategory(workspace: Blockly.WorkspaceSvg): () => voi
     workspace.registerButtonCallback(CREATE_CONSTANT_CALLBACK_KEY, (button) => {
         Blockly.Variables.createVariableButtonHandler(button.getTargetWorkspace(), undefined, CONSTANT_VAR_TYPE);
     });
+    workspace.registerButtonCallback(CLEANUP_CONSTANTS_CALLBACK_KEY, (button) => {
+        cleanUpUnusedVariables(button.getTargetWorkspace(), (t) => t === CONSTANT_VAR_TYPE);
+    });
     workspace.registerToolboxCategoryCallback('CONSTANT_CATEGORY', createFlyout);
 
     return () => {
         workspace.removeToolboxCategoryCallback('CONSTANT_CATEGORY');
         workspace.removeButtonCallback(CREATE_CONSTANT_CALLBACK_KEY);
+        workspace.removeButtonCallback(CLEANUP_CONSTANTS_CALLBACK_KEY);
+    };
+}
+
+const CREATE_ARRAY_CALLBACK_KEY = 'CREATE_ARRAY_BUTTON';
+const CLEANUP_ARRAYS_CALLBACK_KEY = 'CLEANUP_ARRAYS_BUTTON';
+
+/**
+ * The cpp "Arrays" category's flyout: its own "Create array…" button (creates
+ * a variable tagged with ARRAY_VAR_TYPE, so it never shows up mixed in with
+ * regular variables/constants — or vice versa) plus "declare array"/"array
+ * get"/"array set". No per-array blocks to enumerate: array_get/array_set's
+ * own dropdowns (scoped to ARRAY_VAR_TYPE) already cover "pick an existing array."
+ */
+export function initArrayCategory(workspace: Blockly.WorkspaceSvg): () => void {
+    const createFlyout = (): Element[] => {
+        const createButton = document.createElement('button');
+        createButton.setAttribute('text', Blockly.Msg['NEW_ARRAY'] ?? 'Create array…');
+        createButton.setAttribute('callbackKey', CREATE_ARRAY_CALLBACK_KEY);
+        const cleanupButton = document.createElement('button');
+        cleanupButton.setAttribute('text', Blockly.Msg['CLEANUP_ARRAYS'] ?? 'Clean up unused arrays');
+        cleanupButton.setAttribute('callbackKey', CLEANUP_ARRAYS_CALLBACK_KEY);
+        return [
+            createButton,
+            cleanupButton,
+            Blockly.utils.xml.textToDom('<block type="array_declare"></block>'),
+            Blockly.utils.xml.textToDom('<block type="array_get"></block>'),
+            Blockly.utils.xml.textToDom('<block type="array_set"></block>'),
+        ];
+    };
+
+    workspace.registerButtonCallback(CREATE_ARRAY_CALLBACK_KEY, (button) => {
+        Blockly.Variables.createVariableButtonHandler(button.getTargetWorkspace(), undefined, ARRAY_VAR_TYPE);
+    });
+    workspace.registerButtonCallback(CLEANUP_ARRAYS_CALLBACK_KEY, (button) => {
+        cleanUpUnusedVariables(button.getTargetWorkspace(), (t) => t === ARRAY_VAR_TYPE);
+    });
+    workspace.registerToolboxCategoryCallback('ARRAY_CATEGORY', createFlyout);
+
+    return () => {
+        workspace.removeToolboxCategoryCallback('ARRAY_CATEGORY');
+        workspace.removeButtonCallback(CREATE_ARRAY_CALLBACK_KEY);
+        workspace.removeButtonCallback(CLEANUP_ARRAYS_CALLBACK_KEY);
     };
 }

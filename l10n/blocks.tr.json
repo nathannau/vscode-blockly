@@ -63,5 +63,9 @@
   "DECLARE_CONSTANT_MSG": "%1 sabitini tanımla = %2",
   "DECLARE_CONSTANT_TOOLTIP": "Bir sabiti \"#define\" olarak tanımlar (türsüz, basit metin ikamesi). declare_variable'ın aksine hiçbir zaman yerel değildir — bir #define bir fonksiyona bağlı değildir — ve \"static\" gerektirmeden ikincil dosyalar arasında her zaman güvenlidir: hiçbir C++ bağlantısı yoktur, çünkü her kullanım derleyici çalışmadan önce bile gerçek değeriyle değiştirilir.",
   "GET_CONSTANT_TOOLTIP": "\"declare constant\" ile tanımlanmış bir sabitin değerini okur.",
-  "NEW_CONSTANT": "Sabit oluştur…"
+  "NEW_CONSTANT": "Sabit oluştur…",
+  "NEW_ARRAY": "Dizi oluştur…",
+  "CLEANUP_VARIABLES": "Kullanılmayan değişkenleri temizle",
+  "CLEANUP_CONSTANTS": "Kullanılmayan sabitleri temizle",
+  "CLEANUP_ARRAYS": "Kullanılmayan dizileri temizle"
 }

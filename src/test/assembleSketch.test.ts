@@ -7,11 +7,13 @@ suite('categorizeDefinitions', () => {
             'import_a': '#include <Wire.h>',
             'import_b': '#include <Modulino.h>',
             'decl_a': 'ModulinoThermo _thermo;',
+            'proto_blink': 'void blink();',
             'func_blink': 'void blink() {}',
             'setup_a': '_thermo.begin();',
         });
         assert.deepStrictEqual(s.includes, ['#include <Wire.h>', '#include <Modulino.h>']);
         assert.deepStrictEqual(s.declarations, ['ModulinoThermo _thermo;']);
+        assert.deepStrictEqual(s.prototypes, ['void blink();']);
         assert.deepStrictEqual(s.helpers, ['void blink() {}']);
         assert.deepStrictEqual(s.setup, ['_thermo.begin();']);
     });
@@ -24,7 +26,7 @@ suite('categorizeDefinitions', () => {
 });
 
 suite('assembleSketch', () => {
-    const empty: SketchSections = { includes: [], declarations: [], helpers: [], setup: [] };
+    const empty: SketchSections = { includes: [], declarations: [], prototypes: [], helpers: [], setup: [] };
 
     test('empty workspace yields empty setup() and loop() stubs', () => {
         const out = assembleSketch(empty, '');
@@ -57,11 +59,12 @@ suite('assembleSketch', () => {
         assert.ok(out.includes('void loop() {\n  digitalWrite(13, HIGH);\n  delay(100);\n}'), out);
     });
 
-    test('orders sections: includes, declarations, helpers, setup, loop', () => {
+    test('orders sections: includes, declarations, prototypes, helpers, setup, loop', () => {
         const out = assembleSketch(
             {
                 includes: ['#include <Arduino.h>'],
                 declarations: ['int counter;'],
+                prototypes: ['void helper();'],
                 helpers: ['void helper() {}'],
                 setup: ['Serial.begin(9600);'],
             },
@@ -69,16 +72,36 @@ suite('assembleSketch', () => {
         );
         const iInc = out.indexOf('#include <Arduino.h>');
         const iDecl = out.indexOf('int counter;');
-        const iHelp = out.indexOf('void helper()');
+        const iProto = out.indexOf('void helper();');
+        const iHelp = out.indexOf('void helper() {}');
         const iSetup = out.indexOf('void setup()');
         const iLoop = out.indexOf('void loop()');
-        assert.ok(iInc < iDecl && iDecl < iHelp && iHelp < iSetup && iSetup < iLoop, out);
+        assert.ok(iInc < iDecl && iDecl < iProto && iProto < iHelp && iHelp < iSetup && iSetup < iLoop, out);
+    });
+
+    test('prototypes come before every helper definition, regardless of declaration order', () => {
+        // Mirrors what buildCppDef actually produces: proto_X is written right
+        // alongside func_X for every function — categorizeDefinitions must still
+        // bucket all prototypes ahead of all full definitions.
+        const out = assembleSketch(
+            {
+                ...empty,
+                prototypes: ['void a();', 'void b();'],
+                helpers: ['void a() {\n  b();\n}', 'void b() {\n}'],
+            },
+            ''
+        );
+        const iProtoA = out.indexOf('void a();');
+        const iProtoB = out.indexOf('void b();');
+        const iDefA = out.indexOf('void a() {');
+        const iDefB = out.indexOf('void b() {');
+        assert.ok(iProtoA < iDefA && iProtoB < iDefA && iProtoA < iDefB, out);
     });
 
     suite('isSecondary', () => {
         test('omits setup()/loop() entirely when the workspace has no entry-point content', () => {
             const out = assembleSketch(
-                { includes: ['#include <Wire.h>'], declarations: [], helpers: ['void blink() {}'], setup: [] },
+                { includes: ['#include <Wire.h>'], declarations: [], prototypes: [], helpers: ['void blink() {}'], setup: [] },
                 '',
                 undefined,
                 true

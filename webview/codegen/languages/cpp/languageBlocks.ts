@@ -12,6 +12,10 @@ import { registerArduinoStringGenerators } from './strings';
 // plugins.ts's initConstantCategory to create constants with this same type.
 export const CONSTANT_VAR_TYPE = 'constant';
 
+// Same idea, for arrays (array_declare/array_get/array_set). Consumed by
+// plugins.ts's initArrayCategory.
+export const ARRAY_VAR_TYPE = 'array';
+
 export const CPP_KEYWORDS = [
     'auto', 'break', 'case', 'catch', 'char', 'class', 'const', 'constexpr',
     'continue', 'default', 'delete', 'do', 'double', 'else', 'enum', 'explicit',
@@ -236,7 +240,10 @@ function defineCustomBlocks(): void {
             type: 'array_declare',
             message0: '%{BKY_ARRAY_DECLARE_MSG}',
             args0: [
-                { type: 'field_variable', name: 'VAR', variable: 'arr' },
+                {
+                    type: 'field_variable', name: 'VAR', variable: 'arr',
+                    variableTypes: [ARRAY_VAR_TYPE], defaultType: ARRAY_VAR_TYPE,
+                },
                 { type: 'field_dropdown', name: 'TYPE', options: SCALAR_TYPE_OPTIONS },
                 { type: 'field_number', name: 'SIZE', value: 8, min: 1, precision: 1 },
                 { type: 'field_checkbox', name: 'STATIC', checked: false },
@@ -251,7 +258,10 @@ function defineCustomBlocks(): void {
             type: 'array_get',
             message0: '%1 [ %2 ]',
             args0: [
-                { type: 'field_variable', name: 'VAR', variable: 'arr' },
+                {
+                    type: 'field_variable', name: 'VAR', variable: 'arr',
+                    variableTypes: [ARRAY_VAR_TYPE], defaultType: ARRAY_VAR_TYPE,
+                },
                 { type: 'input_value', name: 'INDEX' },
             ],
             inputsInline: true,
@@ -263,7 +273,10 @@ function defineCustomBlocks(): void {
             type: 'array_set',
             message0: '%1 [ %2 ] = %3',
             args0: [
-                { type: 'field_variable', name: 'VAR', variable: 'arr' },
+                {
+                    type: 'field_variable', name: 'VAR', variable: 'arr',
+                    variableTypes: [ARRAY_VAR_TYPE], defaultType: ARRAY_VAR_TYPE,
+                },
                 { type: 'input_value', name: 'INDEX' },
                 { type: 'input_value', name: 'VALUE' },
             ],
@@ -643,6 +656,11 @@ export function registerCppLanguageBlocks(
         // called from main.cpp), unlike its variables, which are private state.
         (g as any).definitions_[`func_${name}`] =
             `${returnType} ${name}(${paramList}) {\n${body}${returnLine}}\n`;
+        // A forward declaration too, hoisted to its own section before every
+        // full definition (see assembleSketch) — otherwise whether "A calls B"
+        // compiles would depend on whether B happens to be generated before A,
+        // which isn't something the block canvas has any reason to guarantee.
+        (g as any).definitions_[`proto_${name}`] = `${returnType} ${name}(${paramList});`;
         return null;
     };
 
