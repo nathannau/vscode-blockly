@@ -19,6 +19,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 - **Plain (untyped) `variables_get`/`variables_set`/`math_change` no longer auto-declare a global.** They used to silently add an `int` global the first time a variable was read/written, which is nearly always wrong for a name-only-created variable and conflicts with blocks that manage a variable's declaration themselves (e.g. "try positions in random order"'s loop variable, or `declare_variable`). Using one of these on a variable nothing has declared is now a compile error instead of silently-wrong generated code — declare it explicitly with `declare_variable` (or the legacy typed-variable modal, for `variables_get_dynamic`/`variables_set_dynamic`, unchanged).
 - **Variables category flyout simplified** — one reusable "get"/"set" block (each with its own variable picker) instead of Blockly's default one get+set pair per *existing* variable, which got unwieldy fast with more than a few variables.
+- **"Declare variable"'s picker no longer lists Constants/Arrays** — restricted to `''` (name-only-created) and the legacy scalar types, matching how `declare_constant`/`get_constant`/`array_declare`/`array_get`/`array_set` were already restricted to their own type.
 
 ## [0.4.1] - 2026-06-25
 

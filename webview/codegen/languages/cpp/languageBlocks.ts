@@ -42,6 +42,13 @@ const SCALAR_TYPE_OPTIONS: [string, string][] = [
     ['bool', 'bool'], ['char', 'char'], ['String', 'String'],
 ];
 
+// declare_variable's own field_variable allowlist: '' (name-only-created,
+// untyped variables) plus every legacy scalar type (variables created via the
+// old typed-variable modal) — everything a "regular variable" could be, but
+// deliberately not CONSTANT_VAR_TYPE/ARRAY_VAR_TYPE, so those never show up
+// in this picker (and vice versa — see their own blocks' variableTypes).
+const REGULAR_VARIABLE_TYPES: string[] = ['', ...SCALAR_TYPE_OPTIONS.map(([, value]) => value)];
+
 /** Zero-equivalent literal for one of SCALAR_TYPE_OPTIONS's types; 'int'/'0' for anything else. */
 function defaultInitForCppType(type: string): string {
     switch (type) {
@@ -226,7 +233,10 @@ function defineCustomBlocks(): void {
             type: 'declare_variable',
             message0: '%{BKY_DECLARE_VARIABLE_MSG}',
             args0: [
-                { type: 'field_variable', name: 'VAR', variable: 'x' },
+                {
+                    type: 'field_variable', name: 'VAR', variable: 'x',
+                    variableTypes: REGULAR_VARIABLE_TYPES, defaultType: '',
+                },
                 { type: 'field_dropdown', name: 'TYPE', options: SCALAR_TYPE_OPTIONS },
                 { type: 'field_checkbox', name: 'STATIC', checked: false },
             ],
