@@ -377,11 +377,29 @@ export function initWorkspacePlugins(workspace: Blockly.WorkspaceSvg): () => voi
         multiselectIcon: { hideIcon: false, weight: 3 },
     });
 
+    // A middle-click-drag pan (or a block drag) that ends with the mouse
+    // released outside the webview never reaches this iframe's mouseup —
+    // Blockly's own gesture-end listener lives in this document, and a
+    // release over another VS Code pane fires in a *different* document
+    // entirely. Left stuck "dragging" forever with no mouseup to end it.
+    // mouseleave on `document` (unlike on an element, it doesn't bubble) and
+    // window blur both reliably fire when the pointer/focus leaves the
+    // webview, regardless of button state, so use them as a safety net that
+    // cancels whatever gesture Blockly still thinks is in progress.
+    const cancelActiveGesture = () => {
+        const gesture = workspace.getGesture();
+        if (gesture?.isDragging()) gesture.cancel();
+    };
+    document.addEventListener('mouseleave', cancelActiveGesture);
+    window.addEventListener('blur', cancelActiveGesture);
+
     return () => {
         backpack.dispose();
         multiselect.dispose();
         workspace.removeChangeListener(shadowBlockConversionChangeListener);
         workspace.removeChangeListener(BlockDynamicConnection.finalizeConnections);
+        document.removeEventListener('mouseleave', cancelActiveGesture);
+        window.removeEventListener('blur', cancelActiveGesture);
     };
 }
 

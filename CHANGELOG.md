@@ -21,6 +21,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - **Variables category flyout simplified** — one reusable "get"/"set" block (each with its own variable picker) instead of Blockly's default one get+set pair per *existing* variable, which got unwieldy fast with more than a few variables.
 - **"Declare variable"'s picker no longer lists Constants/Arrays** — restricted to `''` (name-only-created) and the legacy scalar types, matching how `declare_constant`/`get_constant`/`array_declare`/`array_get`/`array_set` were already restricted to their own type.
 
+### Fixed
+
+- **Middle-click-drag workspace panning could get stuck "dragging" forever** if the mouse was released outside the webview (e.g. over another VS Code pane) — that mouseup fires in a different document entirely, so Blockly's own gesture-end listener never saw it. `mouseleave` on the document and `window` `blur` now act as a safety net, cancelling any gesture still active when the pointer/focus leaves the webview.
+
 ## [0.4.1] - 2026-06-25
 
 ### Added
