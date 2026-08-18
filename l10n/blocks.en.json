@@ -27,6 +27,7 @@
   "SWITCH_TOOLTIP": "Switch on an expression. Use [+] to add cases and [−] to remove them.",
   "CPP_PROC_TO": "to",
   "CPP_PROC_DEFAULT_NAME": "do something",
+  "CPP_PROC_STATIC": "static",
   "CPP_PROC_RETURN": "return",
   "CPP_PROC_CALL": "call",
   "CPP_PROC_WITH": "with",

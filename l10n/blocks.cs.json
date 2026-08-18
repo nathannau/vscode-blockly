@@ -67,5 +67,6 @@
   "NEW_ARRAY": "Vytvořit pole…",
   "CLEANUP_VARIABLES": "Vyčistit nepoužívané proměnné",
   "CLEANUP_CONSTANTS": "Vyčistit nepoužívané konstanty",
-  "CLEANUP_ARRAYS": "Vyčistit nepoužívaná pole"
+  "CLEANUP_ARRAYS": "Vyčistit nepoužívaná pole",
+  "CPP_PROC_STATIC": "static"
 }

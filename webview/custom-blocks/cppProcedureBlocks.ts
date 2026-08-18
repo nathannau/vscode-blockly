@@ -83,7 +83,14 @@ function registerDefBlock(type: string, hasReturn: boolean): void {
                 .appendField(
                     new Blockly.FieldTextInput(Blockly.Msg['CPP_PROC_DEFAULT_NAME'] ?? 'do something', Blockly.Procedures.rename),
                     'NAME',
-                );
+                )
+                // Internal linkage: keeps a helper that's only ever called from
+                // within this same file from colliding with a same-named one in
+                // another file (PlatformIO/arduino-cli compile every source file
+                // together) — leave unchecked for a function that's part of this
+                // file's public interface (e.g. called from main.cpp).
+                .appendField(Blockly.Msg['CPP_PROC_STATIC'] ?? 'static')
+                .appendField(new Blockly.FieldCheckbox(false), 'STATIC');
 
             this.appendStatementInput('STACK');
 

@@ -67,5 +67,6 @@
   "NEW_ARRAY": "Создать массив…",
   "CLEANUP_VARIABLES": "Очистить неиспользуемые переменные",
   "CLEANUP_CONSTANTS": "Очистить неиспользуемые константы",
-  "CLEANUP_ARRAYS": "Очистить неиспользуемые массивы"
+  "CLEANUP_ARRAYS": "Очистить неиспользуемые массивы",
+  "CPP_PROC_STATIC": "static"
 }

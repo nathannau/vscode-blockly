@@ -67,5 +67,6 @@
   "NEW_ARRAY": "Tömb létrehozása…",
   "CLEANUP_VARIABLES": "Nem használt változók törlése",
   "CLEANUP_CONSTANTS": "Nem használt konstansok törlése",
-  "CLEANUP_ARRAYS": "Nem használt tömbök törlése"
+  "CLEANUP_ARRAYS": "Nem használt tömbök törlése",
+  "CPP_PROC_STATIC": "static"
 }

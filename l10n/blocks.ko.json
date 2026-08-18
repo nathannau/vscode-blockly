@@ -67,5 +67,6 @@
   "NEW_ARRAY": "배열 만들기…",
   "CLEANUP_VARIABLES": "사용하지 않는 변수 정리",
   "CLEANUP_CONSTANTS": "사용하지 않는 상수 정리",
-  "CLEANUP_ARRAYS": "사용하지 않는 배열 정리"
+  "CLEANUP_ARRAYS": "사용하지 않는 배열 정리",
+  "CPP_PROC_STATIC": "static"
 }

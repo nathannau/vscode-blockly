@@ -67,5 +67,6 @@
   "NEW_ARRAY": "Créer un tableau…",
   "CLEANUP_VARIABLES": "Nettoyer les variables inutilisées",
   "CLEANUP_CONSTANTS": "Nettoyer les constantes inutilisées",
-  "CLEANUP_ARRAYS": "Nettoyer les tableaux inutilisés"
+  "CLEANUP_ARRAYS": "Nettoyer les tableaux inutilisés",
+  "CPP_PROC_STATIC": "static"
 }

@@ -67,5 +67,6 @@
   "NEW_ARRAY": "配列を作成…",
   "CLEANUP_VARIABLES": "未使用の変数を整理",
   "CLEANUP_CONSTANTS": "未使用の定数を整理",
-  "CLEANUP_ARRAYS": "未使用の配列を整理"
+  "CLEANUP_ARRAYS": "未使用の配列を整理",
+  "CPP_PROC_STATIC": "static"
 }

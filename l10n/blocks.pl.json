@@ -67,5 +67,6 @@
   "NEW_ARRAY": "Utwórz tablicę…",
   "CLEANUP_VARIABLES": "Wyczyść nieużywane zmienne",
   "CLEANUP_CONSTANTS": "Wyczyść nieużywane stałe",
-  "CLEANUP_ARRAYS": "Wyczyść nieużywane tablice"
+  "CLEANUP_ARRAYS": "Wyczyść nieużywane tablice",
+  "CPP_PROC_STATIC": "static"
 }

@@ -47,7 +47,10 @@ const SCALAR_TYPE_OPTIONS: [string, string][] = [
 // old typed-variable modal) — everything a "regular variable" could be, but
 // deliberately not CONSTANT_VAR_TYPE/ARRAY_VAR_TYPE, so those never show up
 // in this picker (and vice versa — see their own blocks' variableTypes).
-const REGULAR_VARIABLE_TYPES: string[] = ['', ...SCALAR_TYPE_OPTIONS.map(([, value]) => value)];
+// Exported so plugins.ts can apply the same restriction to Blockly's built-in
+// variables_get/variables_set/math_change (not custom JSON block defs, so
+// they can't take a variableTypes arg the same way — see patchPlainVariableBlocks).
+export const REGULAR_VARIABLE_TYPES: string[] = ['', ...SCALAR_TYPE_OPTIONS.map(([, value]) => value)];
 
 /** Zero-equivalent literal for one of SCALAR_TYPE_OPTIONS's types; 'int'/'0' for anything else. */
 function defaultInitForCppType(type: string): string {
@@ -661,16 +664,22 @@ export function registerCppLanguageBlocks(
         const returnLine = isVoid
             ? ''
             : `${g.INDENT}return ${returnValue};\n`;
-        // Deliberately not `static`: a secondary file's helper functions are
-        // often its public interface (e.g. `jeu1_start`/`jeu1_loop`/`jeu1_stop`
-        // called from main.cpp), unlike its variables, which are private state.
+        // Not static by default: a secondary file's helper functions are often
+        // its public interface (e.g. `jeu1_start`/`jeu1_loop`/`jeu1_stop`
+        // called from main.cpp) — but a purely internal helper (e.g. a
+        // `boucle()` that happens to share its name with one in another file)
+        // can opt into internal linkage via the block's own "static" checkbox,
+        // the same explicit per-declaration choice declare_variable/array_declare
+        // already offer for variables/arrays.
+        const isStatic = block.getFieldValue('STATIC') === 'TRUE';
+        const storagePrefix = isStatic ? 'static ' : '';
         (g as any).definitions_[`func_${name}`] =
-            `${returnType} ${name}(${paramList}) {\n${body}${returnLine}}\n`;
+            `${storagePrefix}${returnType} ${name}(${paramList}) {\n${body}${returnLine}}\n`;
         // A forward declaration too, hoisted to its own section before every
         // full definition (see assembleSketch) — otherwise whether "A calls B"
         // compiles would depend on whether B happens to be generated before A,
         // which isn't something the block canvas has any reason to guarantee.
-        (g as any).definitions_[`proto_${name}`] = `${returnType} ${name}(${paramList});`;
+        (g as any).definitions_[`proto_${name}`] = `${storagePrefix}${returnType} ${name}(${paramList});`;
         return null;
     };
 

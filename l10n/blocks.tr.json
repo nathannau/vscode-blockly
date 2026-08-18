@@ -67,5 +67,6 @@
   "NEW_ARRAY": "Dizi oluştur…",
   "CLEANUP_VARIABLES": "Kullanılmayan değişkenleri temizle",
   "CLEANUP_CONSTANTS": "Kullanılmayan sabitleri temizle",
-  "CLEANUP_ARRAYS": "Kullanılmayan dizileri temizle"
+  "CLEANUP_ARRAYS": "Kullanılmayan dizileri temizle",
+  "CPP_PROC_STATIC": "static"
 }

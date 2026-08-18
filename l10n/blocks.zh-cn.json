@@ -67,5 +67,6 @@
   "NEW_ARRAY": "创建数组…",
   "CLEANUP_VARIABLES": "清理未使用的变量",
   "CLEANUP_CONSTANTS": "清理未使用的常量",
-  "CLEANUP_ARRAYS": "清理未使用的数组"
+  "CLEANUP_ARRAYS": "清理未使用的数组",
+  "CPP_PROC_STATIC": "static"
 }

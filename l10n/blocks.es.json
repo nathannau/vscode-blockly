@@ -67,5 +67,6 @@
   "NEW_ARRAY": "Crear array…",
   "CLEANUP_VARIABLES": "Limpiar variables no utilizadas",
   "CLEANUP_CONSTANTS": "Limpiar constantes no utilizadas",
-  "CLEANUP_ARRAYS": "Limpiar arrays no utilizados"
+  "CLEANUP_ARRAYS": "Limpiar arrays no utilizados",
+  "CPP_PROC_STATIC": "static"
 }

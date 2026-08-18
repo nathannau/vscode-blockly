@@ -15,7 +15,7 @@ import * as BlockDynamicConnection from '@blockly/block-dynamic-connection';
 import { Multiselect } from '@mit-app-inventor/blockly-plugin-workspace-multiselect';
 
 import './custom-blocks/cppProcedureBlocks';
-import { CONSTANT_VAR_TYPE, ARRAY_VAR_TYPE } from './codegen/languages/cpp/languageBlocks';
+import { CONSTANT_VAR_TYPE, ARRAY_VAR_TYPE, REGULAR_VARIABLE_TYPES } from './codegen/languages/cpp/languageBlocks';
 
 export const CPP_VARIABLE_TYPES: [string, string][] = [
     ['int',     'int'],
@@ -123,6 +123,34 @@ function patchDynamicVariableBlocks(): void {
                 originalGetInit.call(this);
                 this.outputConnection?.setCheck(null);
                 (this as unknown as { onchange: () => void }).onchange = noop;
+            },
+        };
+    }
+}
+
+let _plainVarPatched = false;
+/**
+ * variables_get/variables_set/math_change are Blockly's own built-in blocks —
+ * unlike declare_variable (a custom JSON def), there's no `variableTypes` arg
+ * to pass at definition time. FieldVariable does have the exact method for
+ * this (setTypes), just marked private in its public .d.ts — call it directly
+ * on the VAR field right after init() constructs it, so their picker excludes
+ * Constants/Arrays the same way declare_variable's already does.
+ */
+function patchPlainVariableBlocks(): void {
+    if (_plainVarPatched) return;
+    _plainVarPatched = true;
+
+    for (const type of ['variables_get', 'variables_set', 'math_change']) {
+        const def = Blockly.Blocks[type];
+        if (!def) continue;
+        const originalInit = def.init as (this: Blockly.Block) => void;
+        Blockly.Blocks[type] = {
+            ...def,
+            init(this: Blockly.Block): void {
+                originalInit.call(this);
+                (this.getField('VAR') as unknown as { setTypes?: (types: string[] | null, defaultType?: string) => void } | null)
+                    ?.setTypes?.(REGULAR_VARIABLE_TYPES, '');
             },
         };
     }
@@ -465,6 +493,8 @@ const CLEANUP_VARIABLES_CALLBACK_KEY = 'CLEANUP_VARIABLES_BUTTON';
  * a button and fixed blocks coexist in one category.
  */
 export function initVariableDeclareCategory(workspace: Blockly.WorkspaceSvg): () => void {
+    patchPlainVariableBlocks();
+
     const createFlyout = (): Element[] => {
         const createButton = document.createElement('button');
         createButton.setAttribute('text', Blockly.Msg['NEW_VARIABLE'] ?? 'Create variable…');
